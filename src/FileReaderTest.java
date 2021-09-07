@@ -1,11 +1,16 @@
+/*
+ * FileReaderTest.java
+ * CS 490 Team 3 Fall 2021
+ * Test file reading process
+ */
 package src;
 
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+//import static org.junit.jupiter.api.Assertions.*;
 
 class FileReaderTest {
-    @Test
+    //@Test
     public void TestReadFile()
     {
         FileReader file = new FileReader();
