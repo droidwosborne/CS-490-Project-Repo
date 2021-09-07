@@ -1,3 +1,8 @@
+/*
+ * FileReader.java
+ * CS 490 Team 3 Fall 2021
+ * Reads process information from given file
+ */
 package src;
 
 import java.io.*;
