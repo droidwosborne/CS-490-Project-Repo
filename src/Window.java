@@ -9,13 +9,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JTable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.JScrollPane;
 
 /*
  * Class declaration for Window class extending JPanel for component placement and
@@ -82,6 +80,7 @@ public class Window extends JPanel implements ActionListener{
                                 {"n/a", "0"},
                                 {"n/a", "0"}};
 
+
         processList = new JTable(processes, columnHeaders);
         processList.setBackground(Color.lightGray);
         JTableHeader header = processList.getTableHeader();
@@ -116,8 +115,35 @@ public class Window extends JPanel implements ActionListener{
      */
     public void actionPerformed(ActionEvent action)
     {
+        if(action.getSource().equals(start))
+        {
+            FileReader reader = new FileReader();
+
+            // Read the file. The file will need to be a variable later
+            List<String> processes = reader.ReadFile("InputFiles/test.txt");
+
+
+            for (int i = 0; i < processes.size(); i++)
+            {
+                // Makes sure there are rows available
+                if(i < processList.getRowCount())
+                {
+                    String processName = reader.getProcessName(processes, i);
+                    String serviceTime = reader.getServiceTime(processes, i);
+
+                    // Set process name in GUI
+                    processList.setValueAt(processName, i, 0);
+
+                    // Set service time in GUI
+                    processList.setValueAt(serviceTime, i, 1);
+                }
+            }
+        }
 
     }
+
+
+
 
     //Window component variables
     private JLabel label1;
