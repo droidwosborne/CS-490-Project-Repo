@@ -67,15 +67,22 @@ public class FileReader {
      * @param i is the index of the loop that is being called
      * @return processName
      */
-    public String getProcessName(List<String> processes, int i)
+    public Queue<String> getProcessName(List<String> processes, int i)
     {
         firstComma = processes.get(i).indexOf(" ", 1);
         secondComma = processes.get(i).indexOf(", ", firstComma + 1);
+
        // System.out.println("First: " + firstComma + " Second:" + secondComma);
-        String processName = processes.get(i).substring(firstComma, secondComma);
+        Queue<String> processName = new LinkedList<String>();
+        Queue<String> temp = new LinkedList<>();
+        processName.add(processes.get(i).substring(firstComma, secondComma));
         if(processName.contains(" "))
         {
-            processName = processName.substring(1);
+            // Pop the element and place into temp queue
+            temp.add(processName.remove());
+            String tempName = temp.remove();
+            tempName = tempName.substring(1);
+            processName.add(tempName);
         }
        // System.out.println("Name:" + processName);
         return processName;
@@ -87,14 +94,19 @@ public class FileReader {
      * @param i is the index of the loop that is being called
      * @return service time
      */
-    public String getServiceTime(List<String> processes, int i)
+    public Queue<String> getServiceTime(List<String> processes, int i)
     {
         finalComma = processes.get(i).lastIndexOf(",");
         System.out.println("Final Comma: " + finalComma);
-        String time = processes.get(i).substring(secondComma + 1, finalComma);
+        Queue<String> time = new LinkedList<>();
+        time.add(processes.get(i).substring(secondComma + 1, finalComma));
         if(time.contains(" "))
         {
-            time = time.substring(1);
+            // Pop the element and place into temp queue
+           // temp.add(processName.remove());
+            String tempName = time.peek();
+            tempName = tempName.substring(1);
+            time.add(tempName);
 
         }
         System.out.println("Time: " + time);

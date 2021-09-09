@@ -10,7 +10,9 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -115,29 +117,48 @@ public class Window extends JPanel implements ActionListener{
      */
     public void actionPerformed(ActionEvent action)
     {
+
+        // Start button pressed
         if(action.getSource().equals(start))
         {
             FileReader reader = new FileReader();
 
             // Read the file. The file will need to be a variable later
             List<String> processes = reader.ReadFile("InputFiles/test.txt");
-
+            Queue<String> temp = new LinkedList<>();
+            Queue<String> tempServ = new LinkedList<>();
 
             for (int i = 0; i < processes.size(); i++)
             {
                 // Makes sure there are rows available
                 if(i < processList.getRowCount())
                 {
-                    String processName = reader.getProcessName(processes, i);
-                    String serviceTime = reader.getServiceTime(processes, i);
+
+                    Queue<String> processName = reader.getProcessName(processes, i);
+                    Queue<String> serviceTime = reader.getServiceTime(processes, i);
+                    temp.add(processName.peek());
 
                     // Set process name in GUI
-                    processList.setValueAt(processName, i, 0);
+                    processList.setValueAt(processName.peek(), i, 0);
+                    label4.setText("<html>" + "cpu 1" + "<br/>exec: " + processList.getValueAt(0,0) + "<br/>time remaining = " + processList.getValueAt(0,1) + "</html>");
+
+
+                   // label1.setBackground(Color.WHITE);
 
                     // Set service time in GUI
-                    processList.setValueAt(serviceTime, i, 1);
+                    processList.setValueAt(serviceTime.peek(), i, 1);
                 }
             }
+            label1.setText("<html><font color='FFFFFF'>"+ "System Running" +"</font></html>");
+            size = label1.getPreferredSize();
+            label1.setBounds(350, 50, size.width, size.height);
+        }
+
+        if (action.getSource().equals(pause))
+        {
+            label1.setText("<html><font color='FFFFFF'>"+ "System Paused" +"</font></html>");
+            size = label1.getPreferredSize();
+            label1.setBounds(350, 50, size.width, size.height);
         }
 
     }
