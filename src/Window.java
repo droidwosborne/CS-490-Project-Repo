@@ -122,6 +122,7 @@ public class Window extends JPanel implements ActionListener{
         if(action.getSource().equals(start))
         {
             FileReader reader = new FileReader();
+            Processes process = new Processes();
 
             // Read the file. The file will need to be a variable later
             List<String> processes = reader.ReadFile("InputFiles/test.txt");
@@ -138,6 +139,7 @@ public class Window extends JPanel implements ActionListener{
                     Queue<String> serviceTime = reader.getServiceTime(processes, i);
                     temp.add(processName.peek());
 
+
                     // Set process name in GUI
                     processList.setValueAt(processName.peek(), i, 0);
                     label4.setText("<html>" + "cpu 1" + "<br/>exec: " + processList.getValueAt(0,0) + "<br/>time remaining = " + processList.getValueAt(0,1) + "</html>");
@@ -147,11 +149,18 @@ public class Window extends JPanel implements ActionListener{
 
                     // Set service time in GUI
                     processList.setValueAt(serviceTime.peek(), i, 1);
+
+                    if(!common.CPU1RUNNING)
+                    {
+                        if(process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING));
+                            common.CPU1RUNNING = false;
+                    }
                 }
             }
             label1.setText("<html><font color='FFFFFF'>"+ "System Running" +"</font></html>");
             size = label1.getPreferredSize();
             label1.setBounds(350, 50, size.width, size.height);
+
         }
 
         if (action.getSource().equals(pause))

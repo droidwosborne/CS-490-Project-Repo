@@ -10,6 +10,7 @@ import java.io.File;
 public class Main {
 
     public static void main(String[] args) {
+
         Frame processWindow = new Frame();
         Window processPanel = new Window();
         processWindow.add(processPanel);
