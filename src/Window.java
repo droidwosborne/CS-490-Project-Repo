@@ -22,6 +22,7 @@ import javax.swing.table.JTableHeader;
  * implementing ActionListener to allow for actions on button click and text entry.
  */
 public class Window extends JPanel implements ActionListener{
+    public Timer timer = new Timer();
     //Constructor for Window class consisting of components in Panel
     public Window () {
         //Arbitrary size and color appearance of the window
@@ -121,8 +122,8 @@ public class Window extends JPanel implements ActionListener{
         // Start button pressed
         if(action.getSource().equals(start))
         {
+            timer.startTimer();
             FileReader reader = new FileReader();
-
             // Read the file. The file will need to be a variable later
             List<String> processes = reader.ReadFile("InputFiles/test.txt");
             Queue<String> temp = new LinkedList<>();
@@ -156,6 +157,7 @@ public class Window extends JPanel implements ActionListener{
 
         if (action.getSource().equals(pause))
         {
+            timer.pauseTimer();
             label1.setText("<html><font color='FFFFFF'>"+ "System Paused" +"</font></html>");
             size = label1.getPreferredSize();
             label1.setBounds(350, 50, size.width, size.height);
