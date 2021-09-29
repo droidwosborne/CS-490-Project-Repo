@@ -160,6 +160,8 @@ public class Window extends JPanel implements ActionListener{
             size = label1.getPreferredSize();
             label1.setBounds(350, 50, size.width, size.height);
         }
+        //This is just showing in the console that the CPU Queue is filled.
+        CpuQueue.printQueue();
 
     }
 
