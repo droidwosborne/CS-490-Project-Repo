@@ -102,7 +102,7 @@ public class FileReader {
         finalComma = processes.get(i).lastIndexOf(",");
         System.out.println("Final Comma: " + finalComma);
         Queue<String> time = new LinkedList<>();
-        time.add(processes.get(i).substring(secondComma + 1, finalComma));
+        time.add(processes.get(i).substring(secondComma + 2, finalComma));
         if(time.contains(" "))
         {
             // Pop the element and place into temp queue
