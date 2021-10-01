@@ -5,7 +5,7 @@
  */
 package src;
 
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +13,13 @@ import java.util.List;
 class FileReaderTest {
     FileReader file = new FileReader();
     List<String> process = new ArrayList<>();
-    @Test
+    //@Test
     public void TestReadFile()
     {
         file.ReadFile("InputFiles/test.txt");
     }
 
-    @Test
+    //@Test
     public void TestGetProcessName()
     {
         process.add("0, process q, 10, 1");
@@ -29,7 +29,7 @@ class FileReaderTest {
         process.clear();
     }
 
-    @Test
+    //@Test
     public void TestGetServiceTime()
     {
 

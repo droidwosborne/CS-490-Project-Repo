@@ -171,7 +171,14 @@ public class Window extends JPanel implements ActionListener{
             size = label1.getPreferredSize();
             label1.setBounds(350, 50, size.width, size.height);
         }
-
+        if (action.getSource().equals(timeUnit))
+        {
+            String input = timeUnit.getText();
+            int inputInt = Integer.parseInt(input);
+            timer.setTimeUnit(inputInt);
+        }
+        //This is just showing in the console that the CPU Queue is filled.
+        CpuQueue.printQueue();
     }
 
 

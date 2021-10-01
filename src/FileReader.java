@@ -49,6 +49,9 @@ public class FileReader {
             while (((line = br.readLine()) != null))
                 // Print the content on the console
             {
+                //These two lines just add the Processes to the CPU Queue
+                String[] tokens=line.split(", ");
+                CpuQueue.addQueue(new Process(Integer.parseInt(tokens[0]),tokens[1],Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3])));
                 processes.add(line);
                 System.out.println(line);
             }
