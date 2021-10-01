@@ -1,7 +1,7 @@
 package src;
 
 public class Timer {
-    public int timeUnit;
+    public static int timeUnit;
     //Function used to wait the service time with the user input time unit
     public void waitServiceTime(long milliseconds) throws InterruptedException
     {

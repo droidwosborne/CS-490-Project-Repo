@@ -25,7 +25,7 @@ public class CPU extends Thread{
             //This next bit will just sleep for however long depending on how long the one unit of time is set to in the GUI, then it will decrement the serviceTime in the process by 1, and then sleep again in a loop
             //So NYI
             try {
-                Thread.sleep(1000);
+                Thread.sleep(Timer.timeUnit);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

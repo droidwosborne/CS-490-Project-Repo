@@ -128,36 +128,12 @@ public class Window extends JPanel implements ActionListener{
 
             // Read the file. The file will need to be a variable later
             List<String> processes = reader.ReadFile("InputFiles/test.txt");
-            Queue<String> temp = new LinkedList<>();
+
             Queue<String> tempServ = new LinkedList<>();
 
             for (int i = 0; i < processes.size(); i++)
             {
-                // Makes sure there are rows available
-                if(i < processList.getRowCount())
-                {
-
-                    Queue<String> processName = reader.getProcessName(processes, i);
-                    Queue<String> serviceTime = reader.getServiceTime(processes, i);
-                    temp.add(processName.peek());
-
-
-                    // Set process name in GUI
-                    processList.setValueAt(processName.peek(), i, 0);
-                    label4.setText("<html>" + "cpu 1" + "<br/>exec: " + processList.getValueAt(0,0) + "<br/>time remaining = " + processList.getValueAt(0,1) + "</html>");
-
-
-                   // label1.setBackground(Color.WHITE);
-
-                    // Set service time in GUI
-                    processList.setValueAt(serviceTime.peek(), i, 1);
-
-                    if(!common.CPU1RUNNING)
-                    {
-                        if(process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING));
-                            common.CPU1RUNNING = false;
-                    }
-                }
+                DisplayProcesses(reader, processes, i, process);
             }
             label1.setText("<html><font color='FFFFFF'>"+ "System Running" +"</font></html>");
             size = label1.getPreferredSize();
@@ -180,6 +156,38 @@ public class Window extends JPanel implements ActionListener{
         //This is just showing in the console that the CPU Queue is filled.
         CpuQueue.printQueue();
     }
+
+    public void DisplayProcesses(FileReader reader, List<String> processes, int i, Processes process)
+    {
+        Queue<String> temp = new LinkedList<>();
+        // Makes sure there are rows available
+        if(i < processList.getRowCount())
+        {
+
+            Queue<String> processName = reader.getProcessName(processes, i);
+            Queue<String> serviceTime = reader.getServiceTime(processes, i);
+            temp.add(processName.peek());
+
+
+            // Set process name in GUI
+            processList.setValueAt(processName.peek(), i, 0);
+            label4.setText("<html>" + "cpu 1" + "<br/>exec: " + processList.getValueAt(0,0) + "<br/>time remaining = " + processList.getValueAt(0,1) + "</html>");
+
+
+            // label1.setBackground(Color.WHITE);
+
+            // Set service time in GUI
+            processList.setValueAt(serviceTime.peek(), i, 1);
+
+            if(!common.CPU1RUNNING)
+            {
+                if(process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING));
+                common.CPU1RUNNING = false;
+            }
+        }
+    }
+
+
 
 
 
