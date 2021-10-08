@@ -24,7 +24,7 @@ public class Main {
         Processes process = new Processes();
 
         // Read the file. The file will need to be a variable later
-        List<String> processes = reader.ReadFile("InputFiles/test.txt");
+        List<String> processes = reader.ReadFile(Window.file);
 
         for (int i = 0; i < processes.size(); i++)
         {
