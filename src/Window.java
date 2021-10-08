@@ -9,12 +9,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 /*
@@ -26,7 +24,7 @@ public class Window extends JPanel implements ActionListener{
     //Constructor for Window class consisting of components in Panel
     public Window () {
         //Arbitrary size and color appearance of the window
-        Dimension dim = new Dimension(600, 460);
+        Dimension dim = new Dimension(600, 500);
         setMinimumSize(dim);
         setPreferredSize(dim);
         setLayout(null);
@@ -76,39 +74,57 @@ public class Window extends JPanel implements ActionListener{
         * Table with headers contained in scroll pane to depict
         * process name and service time.
          */
-        String[] columnHeaders= {"Process Name","Service Time"};
-        String[][] processesArray = {{"", ""},
+        String[] waitingProcessHeaders= {"Process Name","Service Time"};
+        String[][] waitingProcessesArray = {{"", ""},
                                      {"", ""},
                                      {"", ""},
                                      {"", ""},
                                      {"", ""}};
 
-        processListTable = new JTable(processesArray, columnHeaders);
-        processListTable.setBackground(Color.lightGray);
-        JTableHeader header = processListTable.getTableHeader();
-        header.setBackground(Color.gray);
-        tablePane = new JScrollPane(processListTable);
-        tablePane.setBounds(20, 160, 250, 100);
+        waitingProcessQueueTable = new JTable(waitingProcessesArray, waitingProcessHeaders);
+        waitingProcessQueueTable.setBackground(Color.lightGray);
+        JTableHeader waitingProcessHeader = waitingProcessQueueTable.getTableHeader();
+        waitingProcessHeader.setBackground(Color.gray);
+        tablePane = new JScrollPane(waitingProcessQueueTable);
+        tablePane.setBounds(20, 190, 250, 100);
         add(tablePane);
 
-        //Label4 depicting current process running information
-        String cpu = "CPU 1";
-        String processName = "idle";
+        //Label4 depicting current process running information for cpu 1
         String timeRemaining = "n/a";
-        label4 = new JLabel("<html>" + cpu + "<br/>exec: " + processName + "<br/>time remaining = " + timeRemaining + "</html>");
+        label4 = new JLabel("<html>cpu 1<br/>exec: idle<br/>time remaining = n/a</html>");
         size = label4.getPreferredSize();
-        label4.setBounds(320, 210, (size.width+10), (size.height+10));
+        label4.setBounds(320, 200, (size.width+10), (size.height+10));
         label4.setOpaque(true);
         label4.setBackground(Color.yellow);
         add(label4);
 
+        //Label5 depicting current process running information for cpu 2
+        label5 = new JLabel("<html>cpu 2<br/>exec: idle<br/>time remaining = n/a</html>");
+        size = label5.getPreferredSize();
+        label5.setBounds(320, 270, (size.width+10), (size.height+10));
+        label5.setOpaque(true);
+        label5.setBackground(Color.yellow);
+        add(label5);
+
         //Label5 depicting system report stats
-        label5 = new JLabel( "<html>System Report Stats:<br/>n/a</html>");
+        /*label5 = new JLabel( "<html>System Report Stats:<br/>n/a</html>");
         size = label5.getPreferredSize();
         label5.setBounds(150, 310, (size.width+100), (size.height+100));
         label5.setOpaque(true);
         label5.setBackground(Color.white);
-        add(label5);
+        add(label5);*/
+        String[] completedProcessHeaders= {"Process Name","Arrival Time","Service Time","Finish Time","TAT","nTAT"};
+        String[][] completedProcessesArray = {{"","","","","",""},
+                {"","","","","",""},
+                {"","","","","",""}};
+
+        completedProcessQueueTable = new JTable(completedProcessesArray, completedProcessHeaders);
+        completedProcessQueueTable.setBackground(Color.lightGray);
+        JTableHeader completedProcessHeader = completedProcessQueueTable.getTableHeader();
+        completedProcessHeader.setBackground(Color.gray);
+        tablePane2 = new JScrollPane(completedProcessQueueTable);
+        tablePane2.setBounds(20, 350, 540, 70);
+        add(tablePane2);
 
         //Label6 stating what a single time unit is equal to currently
         label6 = new JLabel("<html><font color='FFFFFF'>Process File Path : </font></html>");
@@ -131,6 +147,16 @@ public class Window extends JPanel implements ActionListener{
         size = fileName.getPreferredSize();
         fileName.setBounds(170, 40, size.width, size.height);
         add(fileName);
+
+        label8 = new JLabel("<html><strong><font color='FFFFFF'><font size = 60px>Current Throughput: 0 process/unit of time</font></font></strong></html>");
+        size = label8.getPreferredSize();
+        label8.setBounds(150,450,size.width,size.height);
+        add(label8);
+
+        label9 = new JLabel("<html><strong><font color='FFFFFF'><font size = 60px>Waiting Process Queue</font></font></strong></html>");
+        size = label9.getPreferredSize();
+        label9.setBounds(60,150,size.width,size.height);
+        add(label9);
     }
 
     /*
@@ -188,20 +214,22 @@ public class Window extends JPanel implements ActionListener{
     {
         Queue<String> temp = new LinkedList<>();
         // Makes sure there are rows available
-        if(i < processListTable.getRowCount())
+        if(i < waitingProcessQueueTable.getRowCount())
         {
             Queue<String> processName = reader.getProcessName(processes, i);
             Queue<String> serviceTime = reader.getServiceTime(processes, i);
             temp.add(processName.peek());
 
             // Set process name in GUI
-            processListTable.setValueAt(processName.peek(), i, 0);
-            label4.setText("<html>" + "cpu 1" + "<br/>exec: " + processListTable.getValueAt(0,0) + "<br/>time remaining = " + processListTable.getValueAt(0,1) + "</html>");
+            waitingProcessQueueTable.setValueAt(processName.peek(), i, 0);
+            completedProcessQueueTable.setValueAt(processName.peek(),i,0);
+            label4.setText("<html>" + "cpu 1" + "<br/>exec: " + waitingProcessQueueTable.getValueAt(0,0) + "<br/>time remaining = " + waitingProcessQueueTable.getValueAt(0,1) + "</html>");
 
             // label1.setBackground(Color.WHITE);
 
             // Set service time in GUI
-            processListTable.setValueAt(serviceTime.peek(), i, 1);
+            waitingProcessQueueTable.setValueAt(serviceTime.peek(), i, 1);
+            completedProcessQueueTable.setValueAt(serviceTime.peek(),i,2);
 
             if(!common.CPU1RUNNING)
             {
@@ -219,11 +247,15 @@ public class Window extends JPanel implements ActionListener{
     private JLabel label5;
     private JLabel label6;
     private JLabel label7;
+    private JLabel label8;
+    private JLabel label9;
     private Dimension size;
     private JButton start;
     private JButton pause;
-    private JTable processListTable;
+    private JTable waitingProcessQueueTable;
+    private JTable completedProcessQueueTable;
     private JScrollPane tablePane;
+    private JScrollPane tablePane2;
     private JTextField timeUnit;
     private JTextField fileName;
     public static String file;
