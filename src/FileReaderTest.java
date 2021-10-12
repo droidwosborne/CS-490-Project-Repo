@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class FileReaderTest {
+    /*
     FileReader file = new FileReader();
     List<String> process = new ArrayList<>();
     //@Test
@@ -38,7 +39,5 @@ class FileReaderTest {
         process.add("0, process l, 4, 1");
         assert (file.getServiceTime(process, 0).equals("4"));
         process.clear();
-    }
-
-
+    } */
 }
