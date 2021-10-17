@@ -34,7 +34,7 @@ public class Main {
             actionPerformed function since that is when the CPU Queue is filled. Depending on how we implement it, these next two lines might be here or somewhere else or where ever, as long as the CPU Queue is filled
             which happens when the FileReader class does its thing it will work.
          */
-         CPU cpu1 =new CPU(1);
-         cpu1.start();
+       // CPU cpu1 =new CPU(1, processPanel);
+       // cpu1.CalculateThroughput();
     }
 }

@@ -7,9 +7,11 @@ package src;
 
 public class CPU extends Thread{
     private int cpuNumber;
+    private Window window;
 
-    public CPU(int cpuNumber) {
+    public CPU(int cpuNumber, Window window) {
         this.cpuNumber = cpuNumber;
+        this.window = window;
     }
 
     public void run() {
@@ -31,5 +33,13 @@ public class CPU extends Thread{
             }
         }
 
+    }
+
+    public void CalculateThroughput()
+    {
+        int _unitOfTime = 1;
+        double throughput = common.completedProcesses / _unitOfTime;
+        System.out.println("Throughput: " + throughput);
+        window.UpdateThroughput(throughput);
     }
 }

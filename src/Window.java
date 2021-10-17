@@ -148,10 +148,10 @@ public class Window extends JPanel implements ActionListener{
         fileName.setBounds(170, 40, size.width, size.height);
         add(fileName);
 
-        label8 = new JLabel("<html><strong><font color='FFFFFF'><font size = 60px>Current Throughput: 0 process/unit of time</font></font></strong></html>");
-        size = label8.getPreferredSize();
-        label8.setBounds(150,450,size.width,size.height);
-        add(label8);
+        throughputLabel = new JLabel("<html><strong><font color='FFFFFF'><font size = 60px>Current Throughput: 0 process/unit of time</font></font></strong></html>");
+        size = throughputLabel.getPreferredSize();
+        throughputLabel.setBounds(150,450,size.width,size.height);
+        add(throughputLabel);
 
         label9 = new JLabel("<html><strong><font color='FFFFFF'><font size = 60px>Waiting Process Queue</font></font></strong></html>");
         size = label9.getPreferredSize();
@@ -170,13 +170,16 @@ public class Window extends JPanel implements ActionListener{
         {
             FileReader reader = new FileReader();
             Processes processInstance = new Processes();
-
+           // CPU cpu1 =new CPU(1);
+           // cpu1.start();
             // Read the file
             List<String> processesRead = reader.ReadFile(file);
+
             if(processesRead == null)
             {
                 label7.setVisible(true);
             }
+
 
             Queue<String> tempServ = new LinkedList<>();
 
@@ -200,6 +203,7 @@ public class Window extends JPanel implements ActionListener{
             String input = timeUnit.getText();
             int inputInt = Integer.parseInt(input);
             timer.setTimeUnit(inputInt);
+            System.out.println(inputInt);
         }
         if (action.getSource().equals(fileName))
         {
@@ -235,8 +239,30 @@ public class Window extends JPanel implements ActionListener{
             {
                 if(process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING));
                 common.CPU1RUNNING = false;
+                CPU cpu1 = new CPU(1, this);
+                cpu1.CalculateThroughput();
             }
         }
+    }
+
+    /**
+     * Updates the throughput time in the GUI
+     * @param throughput
+     */
+    public void UpdateThroughput(double throughput)
+    {
+        throughputLabel.setText("<html><strong><font color='FFFFFF'><font size = 60px>Current Throughput: " + (throughput / getTimeUnit()) + " process/unit of time</font></font></strong></html>");
+        size = throughputLabel.getPreferredSize();
+        throughputLabel.setBounds(150,450,size.width,size.height);
+    }
+
+    /**
+     * Gets the time unit text field as an int
+     * @return
+     */
+    public int getTimeUnit()
+    {
+        return Integer.parseInt(timeUnit.getText());
     }
 
     //Window component variables
@@ -247,7 +273,7 @@ public class Window extends JPanel implements ActionListener{
     private JLabel label5;
     private JLabel label6;
     private JLabel label7;
-    private JLabel label8;
+    private JLabel throughputLabel;
     private JLabel label9;
     private Dimension size;
     private JButton start;
