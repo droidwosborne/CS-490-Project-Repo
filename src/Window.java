@@ -47,6 +47,7 @@ public class Window extends JPanel implements ActionListener{
         timeUnit = new JTextField(5);
         timeUnit.addActionListener(this);
         size = timeUnit.getPreferredSize();
+        timeUnit.setText("100");
         timeUnit.setBounds(385, 155, size.width, size.height);
         add(timeUnit);
 
