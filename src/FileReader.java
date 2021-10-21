@@ -115,6 +115,25 @@ public class FileReader {
         System.out.println("Time: " + time);
         return time;
     }
+    public Queue<String> getArrivalTime(List<String> processes, int i)
+    {
+        //finalComma = processes.get(i).lastIndexOf(",");
+        //System.out.println("Final Comma: " + finalComma);
+        firstComma = processes.get(i).indexOf(" ", 1);
+        Queue<String> time = new LinkedList<>();
+        time.add(processes.get(i).substring(0, firstComma-1));
+        if(time.contains(" "))
+        {
+            // Pop the element and place into temp queue
+            // temp.add(processName.remove());
+            String tempName = time.peek();
+            tempName = tempName.substring(1);
+            time.add(tempName);
+        }
+        //System.out.println("Time: " + time);
+        return time;
+    }
+
 
     private int firstComma;
     private int secondComma;

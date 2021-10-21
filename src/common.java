@@ -7,4 +7,6 @@ package src;
 
 public class common {
     public static boolean CPU1RUNNING = false;
+    public static int completedProcesses = 0;
+    //public static int totalTime = 0;
 }

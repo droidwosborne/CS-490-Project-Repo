@@ -24,6 +24,7 @@ public class Processes {
                 System.out.println("Process Thread for process: " + processName + ", with service name: " + serviceTime);
                 CPUIsRunnning = true;
                 Thread.sleep(serviceTime * 1000);
+                common.completedProcesses += 1;
                 success = true;
             } catch (InterruptedException e) {
                 System.out.println("The Process thread is interrupted");
