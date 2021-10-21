@@ -168,6 +168,9 @@ public class Window extends JPanel implements ActionListener{
         // Start button pressed
         if(action.getSource().equals(start))
         {
+            label1.setText("<html><font color='FFFFFF'>"+ "System Running" +"</font></html>");
+            size = label1.getPreferredSize();
+            label1.setBounds(350, 110, size.width, size.height);
             FileReader reader = new FileReader();
             Processes processInstance = new Processes();
            // CPU cpu1 =new CPU(1);
@@ -187,9 +190,6 @@ public class Window extends JPanel implements ActionListener{
             {
                 DisplayProcesses(reader, processesRead, i, processInstance);
             }
-            label1.setText("<html><font color='FFFFFF'>"+ "System Running" +"</font></html>");
-            size = label1.getPreferredSize();
-            label1.setBounds(350, 110, size.width, size.height);
         }
 
         if (action.getSource().equals(pause))
@@ -222,6 +222,7 @@ public class Window extends JPanel implements ActionListener{
         {
             Queue<String> processName = reader.getProcessName(processes, i);
             Queue<String> serviceTime = reader.getServiceTime(processes, i);
+            Queue<String> arrivalTime = reader.getArrivalTime(processes, i);
             temp.add(processName.peek());
 
             // Set process name in GUI
@@ -234,6 +235,9 @@ public class Window extends JPanel implements ActionListener{
             // Set service time in GUI
             waitingProcessQueueTable.setValueAt(serviceTime.peek(), i, 1);
             completedProcessQueueTable.setValueAt(serviceTime.peek(),i,2);
+
+            // Set arrival time in GUI
+            completedProcessQueueTable.setValueAt(arrivalTime.peek(),i, 1);
 
             if(!common.CPU1RUNNING)
             {
