@@ -212,7 +212,7 @@ public class Window extends JPanel implements ActionListener{
             file = fileName.getText();
         }
         //This is just showing in the console that the CPU Queue is filled.
-        CpuQueue.printQueue();
+        //CpuQueue.printQueue();
     }
 
     public void DisplayProcesses(FileReader reader, List<String> processes, int i, Processes process)

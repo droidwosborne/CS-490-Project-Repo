@@ -64,6 +64,34 @@ public class FileReader {
         return processes;
     }
 
+    public Queue<Process> ReadFile2(String inFile)
+    {
+        FileInputStream file = null;
+        BufferedReader br = null;
+        Queue <Process> processes = new LinkedList <Process>();
+        String line;
+        if (file != null)
+            br = new BufferedReader(new InputStreamReader(file));
+
+        // Tries to read the file line by line
+        try
+        {
+            while (((line = br.readLine()) != null))
+            // Print the content on the console
+            {
+                //These two lines just add the Processes to the CPU Queue
+                String[] tokens=line.split(", ");
+                processes.add(new Process(Integer.parseInt(tokens[0]),tokens[1],Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3])));
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.println("IO Exception!");
+            return null;
+        }
+        return processes;
+    }
+
     /**
      * Get the process name from the input file
      * @param processes is the list of lines from the file

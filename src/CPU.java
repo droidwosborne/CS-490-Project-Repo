@@ -5,9 +5,13 @@
  */
 package src;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class CPU extends Thread{
     private int cpuNumber;
     private Window window;
+    private List<Process> processes = new LinkedList();
 
     public CPU(int cpuNumber, Window window) {
         this.cpuNumber = cpuNumber;
@@ -27,7 +31,7 @@ public class CPU extends Thread{
             //This next bit will just sleep for however long depending on how long the one unit of time is set to in the GUI, then it will decrement the serviceTime in the process by 1, and then sleep again in a loop
             //So NYI
             try {
-                Thread.sleep(Timer.timeUnit);
+                time.waitServiceTime(current.getServiceTime());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
