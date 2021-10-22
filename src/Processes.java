@@ -12,23 +12,26 @@ public class Processes {
      * @param serviceTime is the amount of time it will take the process to run
      * @return true or false depending on if the process finished successfully
      */
-    public boolean RunProcess(String processName, int serviceTime, boolean CPUIsRunnning)
+    public boolean RunProcess(String processName, int serviceTime, boolean CPUIsRunning)
     {
-        new Threading();
+       // new Threading();
         boolean success = false;
+        Sleeper sleeper = new Sleeper();
 
         // Ensure the passed in CPU is not running something else
-        if(!CPUIsRunnning)
+        if(!CPUIsRunning)
         {
-            try {
+           // try {
                 System.out.println("Process Thread for process: " + processName + ", with service name: " + serviceTime);
-                CPUIsRunnning = true;
-                Thread.sleep(serviceTime * 1000);
+                CPUIsRunning = true;
+               // Thread.sleep(serviceTime * 1000);
+            sleeper.doInBackground();
+
                 common.completedProcesses += 1;
                 success = true;
-            } catch (InterruptedException e) {
-                System.out.println("The Process thread is interrupted");
-            }
+          //  }// catch (InterruptedException e) {
+               // System.out.println("The Process thread is interrupted");
+            //}
         }
         System.out.println("Exiting the Process thread");
         return success;

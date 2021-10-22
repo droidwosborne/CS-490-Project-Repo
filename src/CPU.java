@@ -28,6 +28,7 @@ public class CPU extends Thread{
         {
             Process current=CpuQueue.removeQueue(); //Grabs process from queue
             System.out.println(current); //Prints out current process
+            System.out.println(cpuNumber);
             //This next bit will just sleep for however long depending on how long the one unit of time is set to in the GUI, then it will decrement the serviceTime in the process by 1, and then sleep again in a loop
             //So NYI
             try {
