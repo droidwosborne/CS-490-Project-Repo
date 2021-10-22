@@ -308,7 +308,7 @@ public class Window extends JPanel implements ActionListener{
                         + time + "</html>");
                 break;
             case 2:
-                cpu2Label.setText("<html>" + "cpu 1" + "<br/>exec: " + exec + "<br/>time remaining = "
+                cpu2Label.setText("<html>" + "cpu 2" + "<br/>exec: " + exec + "<br/>time remaining = "
                         + time + "</html>");
                 break;
             case 3:
