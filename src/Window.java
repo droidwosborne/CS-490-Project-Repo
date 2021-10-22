@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 /*
@@ -30,134 +31,139 @@ public class Window extends JPanel implements ActionListener{
         setLayout(null);
         setBackground(Color.darkGray);
 
-        //Label1 stating current system state
+        //Label stating current system state
         String systemState = "System Paused";
-        label1 = new JLabel("<html><font color='FFFFFF'>"+ systemState +"</font></html>");
-        size = label1.getPreferredSize();
-        label1.setBounds(350, 110, size.width, size.height);
-        add(label1);
+        systemStateLabel = new JLabel("<html><font color='FFFFFF'>"+ systemState +"</font></html>");
+        size = systemStateLabel.getPreferredSize();
+        systemStateLabel.setBounds(350, 110, size.width, size.height);
+        add(systemStateLabel);
 
-        //Label2 stating what a single time unit is equal to currently
-        label2 = new JLabel("<html><font color='FFFFFF'>1 time unit = </font></html>");
-        size = label2.getPreferredSize();
-        label2.setBounds(300, 160, size.width, size.height);
-        add(label2);
+        //Label stating what a single time unit is equal to currently
+        timeUnitLabel = new JLabel("<html><font color='FFFFFF'>1 time unit = </font></html>");
+        size = timeUnitLabel.getPreferredSize();
+        timeUnitLabel.setBounds(300, 160, size.width, size.height);
+        add(timeUnitLabel);
 
-        //Text field accepting input for values for the time unit interval
-        timeUnit = new JTextField(5);
-        timeUnit.addActionListener(this);
-        size = timeUnit.getPreferredSize();
-        timeUnit.setText("100");
-        timeUnit.setBounds(385, 155, size.width, size.height);
-        add(timeUnit);
+        //Label stating time unit of ms
+        unitTypeLabel = new JLabel("<html><font color='FFFFFF'>ms</font></html>");
+        size = unitTypeLabel.getPreferredSize();
+        unitTypeLabel.setBounds(460, 160, size.width, size.height);
+        add(unitTypeLabel);
 
-        //Label3 stating time unit of ms
-        label3 = new JLabel("<html><font color='FFFFFF'>ms</font></html>");
-        size = label3.getPreferredSize();
-        label3.setBounds(460, 160, size.width, size.height);
-        add(label3);
-        
-        //Button for starting system processes
-        start = new JButton("Start System");
-        size = start.getPreferredSize();
-        start.setBounds(20, 100, size.width, size.height);
-        start.addActionListener(this);
-        add(start);
-
-        //Button for pausing system processes
-        pause = new JButton("Pause System");
-        size = pause.getPreferredSize();
-        pause.setBounds(170, 100, size.width, size.height);
-        pause.addActionListener(this);
-        add(pause);
-
-        /*
-        * Table with headers contained in scroll pane to depict
-        * process name and service time.
-         */
-        String[] waitingProcessHeaders= {"Process Name","Service Time"};
-        String[][] waitingProcessesArray = {{"", ""},
-                                     {"", ""},
-                                     {"", ""},
-                                     {"", ""},
-                                     {"", ""}};
-
-        waitingProcessQueueTable = new JTable(waitingProcessesArray, waitingProcessHeaders);
-        waitingProcessQueueTable.setBackground(Color.lightGray);
-        JTableHeader waitingProcessHeader = waitingProcessQueueTable.getTableHeader();
-        waitingProcessHeader.setBackground(Color.gray);
-        tablePane = new JScrollPane(waitingProcessQueueTable);
-        tablePane.setBounds(20, 190, 250, 100);
-        add(tablePane);
-
-        //Label4 depicting current process running information for cpu 1
-        String timeRemaining = "n/a";
-        label4 = new JLabel("<html>cpu 1<br/>exec: idle<br/>time remaining = n/a</html>");
-        size = label4.getPreferredSize();
-        label4.setBounds(320, 200, (size.width+10), (size.height+10));
-        label4.setOpaque(true);
-        label4.setBackground(Color.yellow);
-        add(label4);
-
-        //Label5 depicting current process running information for cpu 2
-        label5 = new JLabel("<html>cpu 2<br/>exec: idle<br/>time remaining = n/a</html>");
-        size = label5.getPreferredSize();
-        label5.setBounds(320, 270, (size.width+10), (size.height+10));
-        label5.setOpaque(true);
-        label5.setBackground(Color.yellow);
-        add(label5);
-
-        //Label5 depicting system report stats
-        /*label5 = new JLabel( "<html>System Report Stats:<br/>n/a</html>");
-        size = label5.getPreferredSize();
-        label5.setBounds(150, 310, (size.width+100), (size.height+100));
-        label5.setOpaque(true);
-        label5.setBackground(Color.white);
-        add(label5);*/
-        String[] completedProcessHeaders= {"Process Name","Arrival Time","Service Time","Finish Time","TAT","nTAT"};
-        String[][] completedProcessesArray = {{"","","","","",""},
-                {"","","","","",""},
-                {"","","","","",""}};
-
-        completedProcessQueueTable = new JTable(completedProcessesArray, completedProcessHeaders);
-        completedProcessQueueTable.setBackground(Color.lightGray);
-        JTableHeader completedProcessHeader = completedProcessQueueTable.getTableHeader();
-        completedProcessHeader.setBackground(Color.gray);
-        tablePane2 = new JScrollPane(completedProcessQueueTable);
-        tablePane2.setBounds(20, 350, 540, 70);
-        add(tablePane2);
-
-        //Label6 stating what a single time unit is equal to currently
-        label6 = new JLabel("<html><font color='FFFFFF'>Process File Path : </font></html>");
-        size = label6.getPreferredSize();
-        label6.setBounds(50, 40, size.width, size.height);
-        add(label6);
-
-        //Label7 stating invalid file path warning
-        label7 = new JLabel("<html><font color='FF0000'>Invalid File Path</font></html>");
-        size = label7.getPreferredSize();
-        label7.setBounds(180, 70, size.width, size.height);
-        add(label7);
-        label7.setVisible(false);
-
-        //Text field accepting input for values for the file path
-        fileName = new JTextField(30);
-        fileName.addActionListener(this);
-        fileName.setText("InputFiles/test.txt");
-        file = fileName.getText();
-        size = fileName.getPreferredSize();
-        fileName.setBounds(170, 40, size.width, size.height);
-        add(fileName);
-
+        //Label for process throughput value display
         throughputLabel = new JLabel("<html><strong><font color='FFFFFF'><font size = 60px>Current Throughput: 0 process/unit of time</font></font></strong></html>");
         size = throughputLabel.getPreferredSize();
         throughputLabel.setBounds(150,450,size.width,size.height);
         add(throughputLabel);
 
-        label9 = new JLabel("<html><strong><font color='FFFFFF'><font size = 60px>Waiting Process Queue</font></font></strong></html>");
-        size = label9.getPreferredSize();
-        label9.setBounds(60,150,size.width,size.height);
-        add(label9);
+        //Label for waiting process queue header
+        waitingProcessLabel = new JLabel("<html><strong><font color='FFFFFF'><font size = 60px>Waiting Process Queue</font></font></strong></html>");
+        size = waitingProcessLabel.getPreferredSize();
+        waitingProcessLabel.setBounds(60,150,size.width,size.height);
+        add(waitingProcessLabel);
+
+        //Label depicting current process running information for cpu 1
+        cpu1Label = new JLabel("<html>cpu 1<br/>exec: idle<br/>time remaining = n/a</html>");
+        size = cpu1Label.getPreferredSize();
+        cpu1Label.setBounds(320, 200, (size.width+10), (size.height+10));
+        cpu1Label.setOpaque(true);
+        cpu1Label.setBackground(Color.yellow);
+        add(cpu1Label);
+
+        //Label depicting current process running information for cpu 2
+        cpu2Label = new JLabel("<html>cpu 2<br/>exec: idle<br/>time remaining = n/a</html>");
+        size = cpu2Label.getPreferredSize();
+        cpu2Label.setBounds(320, 270, (size.width+10), (size.height+10));
+        cpu2Label.setOpaque(true);
+        cpu2Label.setBackground(Color.yellow);
+        add(cpu2Label);
+
+        //Label for process file path
+        filePathLabel = new JLabel("<html><font color='FFFFFF'>Process File Path : </font></html>");
+        size = filePathLabel.getPreferredSize();
+        filePathLabel.setBounds(50, 40, size.width, size.height);
+        add(filePathLabel);
+
+        //Label stating invalid file path warning
+        filePathWarningLabel = new JLabel("<html><font color='FF0000'>Invalid File Path</font></html>");
+        size = filePathWarningLabel.getPreferredSize();
+        filePathWarningLabel.setBounds(180, 70, size.width, size.height);
+        add(filePathWarningLabel);
+        filePathWarningLabel.setVisible(false);
+
+        //Text field accepting input for values for the time unit interval
+        timeUnitTextField = new JTextField(5);
+        timeUnitTextField.addActionListener(this);
+        size = timeUnitTextField.getPreferredSize();
+        timeUnitTextField.setText("100");
+        timeUnitTextField.setBounds(385, 155, size.width, size.height);
+        add(timeUnitTextField);
+
+        //Text field accepting input for values for the file path
+        fileNameTextField = new JTextField(30);
+        fileNameTextField.addActionListener(this);
+        fileNameTextField.setText("InputFiles/test.txt");
+        file = fileNameTextField.getText();
+        size = fileNameTextField.getPreferredSize();
+        fileNameTextField.setBounds(170, 40, size.width, size.height);
+        add(fileNameTextField);
+
+        //Button for starting system processes
+        startButton = new JButton("Start System");
+        size = startButton.getPreferredSize();
+        startButton.setBounds(20, 100, size.width, size.height);
+        startButton.addActionListener(this);
+        add(startButton);
+
+        //Button for pausing system processes
+        pauseButton = new JButton("Pause System");
+        size = pauseButton.getPreferredSize();
+        pauseButton.setBounds(170, 100, size.width, size.height);
+        pauseButton.addActionListener(this);
+        add(pauseButton);
+
+        /*
+         * Table model for waiting process table to dynamically add rows for each process
+         */
+        waitingTableModel = new DefaultTableModel();
+        waitingTableModel.addColumn("Process Name");
+        waitingTableModel.addColumn("Arrival Time");
+        waitingTableModel.addRow(new Object[]{"",""});
+
+        /*
+         * Table with headers contained in scroll pane to depict
+         * process name and service time for waiting processes.
+         */
+        waitingProcessQueueTable = new JTable(waitingTableModel);
+        waitingProcessQueueTable.setBackground(Color.lightGray);
+        JTableHeader waitingProcessHeader = waitingProcessQueueTable.getTableHeader();
+        waitingProcessHeader.setBackground(Color.gray);
+        waitingProcessScrollingPane = new JScrollPane(waitingProcessQueueTable);
+        waitingProcessScrollingPane.setBounds(20, 190, 250, 100);
+        add(waitingProcessScrollingPane);
+
+        /*
+         * Table model for completed process table to dynamically add rows for each process
+         */
+        completedTableModel = new DefaultTableModel();
+        completedTableModel.addColumn("Process Name");
+        completedTableModel.addColumn("Arrival Time");
+        completedTableModel.addColumn("Service Time");
+        completedTableModel.addColumn("Finish Time");
+        completedTableModel.addColumn("TAT");
+        completedTableModel.addColumn("nTAT");
+
+        /*
+         * Table with headers contained in completed process
+         * data.
+         */
+        completedProcessQueueTable = new JTable(completedTableModel);
+        completedProcessQueueTable.setBackground(Color.lightGray);
+        JTableHeader completedProcessHeader = completedProcessQueueTable.getTableHeader();
+        completedProcessHeader.setBackground(Color.gray);
+        completedProcessScrollingPane = new JScrollPane(completedProcessQueueTable);
+        completedProcessScrollingPane.setBounds(20, 350, 540, 70);
+        add(completedProcessScrollingPane);
     }
 
     /*
@@ -167,11 +173,11 @@ public class Window extends JPanel implements ActionListener{
     public void actionPerformed(ActionEvent action)
     {
         // Start button pressed
-        if(action.getSource().equals(start))
+        if(action.getSource().equals(startButton))
         {
-            label1.setText("<html><font color='FFFFFF'>"+ "System Running" +"</font></html>");
-            size = label1.getPreferredSize();
-            label1.setBounds(350, 110, size.width, size.height);
+            systemStateLabel.setText("<html><font color='FFFFFF'>"+ "System Running" +"</font></html>");
+            size = systemStateLabel.getPreferredSize();
+            systemStateLabel.setBounds(350, 110, size.width, size.height);
             FileReader reader = new FileReader();
             Processes processInstance = new Processes();
            // CPU cpu1 =new CPU(1);
@@ -181,9 +187,8 @@ public class Window extends JPanel implements ActionListener{
 
             if(processesRead == null)
             {
-                label7.setVisible(true);
+                filePathWarningLabel.setVisible(true);
             }
-
 
             Queue<String> tempServ = new LinkedList<>();
 
@@ -192,25 +197,38 @@ public class Window extends JPanel implements ActionListener{
                 DisplayProcesses(reader, processesRead, i, processInstance);
             }
         }
-
-
-        if (action.getSource().equals(pause))
+        
+        if (action.getSource().equals(pauseButton))
         {
-            label1.setText("<html><font color='FFFFFF'>"+ "System Paused" +"</font></html>");
-            size = label1.getPreferredSize();
-            label1.setBounds(350, 110, size.width, size.height);
+            /*
+             * Runs code to update GUI on event thread (not certain correct)
+             */
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    systemStateLabel.setText("<html><font color='FFFFFF'>"+ "System Paused" +"</font></html>");
+                    size = systemStateLabel.getPreferredSize();
+                    systemStateLabel.setBounds(350, 110, size.width, size.height);
+                    try {
+                        CPU.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
-        if (action.getSource().equals(timeUnit))
+
+        if (action.getSource().equals(timeUnitTextField))
         {
-            String input = timeUnit.getText();
+            String input = timeUnitTextField.getText();
             int inputInt = Integer.parseInt(input);
             timer.setTimeUnit(inputInt);
             System.out.println(inputInt);
         }
-        if (action.getSource().equals(fileName))
+        if (action.getSource().equals(fileNameTextField))
         {
-            label7.setVisible(false);
-            file = fileName.getText();
+            filePathWarningLabel.setVisible(false);
+            file = fileNameTextField.getText();
         }
         //This is just showing in the console that the CPU Queue is filled.
         //CpuQueue.printQueue();
@@ -228,45 +246,47 @@ public class Window extends JPanel implements ActionListener{
             temp.add(processName.peek());
 
             // Set process name in GUI
-            waitingProcessQueueTable.setValueAt(processName.peek(), i, 0);
-            completedProcessQueueTable.setValueAt(processName.peek(),i,0);
-            label4.setText("<html>" + "cpu 1" + "<br/>exec: " + waitingProcessQueueTable.getValueAt(0,0) + "<br/>time remaining = " + waitingProcessQueueTable.getValueAt(0,1) + "</html>");
+            cpu1Label.setText("<html>" + "cpu 1" + "<br/>exec: " + waitingProcessQueueTable.getValueAt(0,0) + "<br/>time remaining = " + waitingProcessQueueTable.getValueAt(0,1) + "</html>");
 
-            // label1.setBackground(Color.WHITE);
+            //Set table rows for current process
+            waitingTableModel.insertRow(i,new Object[]{processName.peek(),arrivalTime.peek()});
+            completedTableModel.insertRow(i,new Object[]{processName.peek(),serviceTime.peek(),arrivalTime.peek()});
 
-            // Set service time in GUI
-            waitingProcessQueueTable.setValueAt(serviceTime.peek(), i, 1);
-            completedProcessQueueTable.setValueAt(serviceTime.peek(),i,2);
-
-            // Set arrival time in GUI
-            completedProcessQueueTable.setValueAt(arrivalTime.peek(),i, 1);
             CPU cpu1 = new CPU(1, this);
             CPU cpu2 = new CPU(2, this);
-                if (!common.CPU1RUNNING) {
-                    common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
-                   // common.CPU1RUNNING = false;
-                    System.out.println("I ran on CPU 1");
-
-                    cpu1.CalculateThroughput();
-                } else if (!common.CPU2RUNNING) {
-                    process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU2RUNNING);
-                    common.CPU2RUNNING = false;
-                    System.out.println("I ran on CPU 2");
-
-                //    cpu2.CalculateThroughput();
-                }
-
+            if (!common.CPU1RUNNING) {
+                runCPU1(process, processName,serviceTime, cpu1);
+            } else if (!common.CPU2RUNNING) {
+                runCPU2(process, processName, serviceTime);
+            }
         }
     }
 
+    public void runCPU1(Processes process, Queue<String> processName, Queue<String> serviceTime, CPU cpu1)
+    {
+        synchronized (this) {
+            common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
+            // common.CPU1RUNNING = false;
+            System.out.println("I ran on CPU 1");
+            cpu1.CalculateThroughput();
+        }
+    }
 
+    public void runCPU2(Processes process, Queue<String> processName, Queue<String> serviceTime)
+    {
+        synchronized (this) {
+            common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
+            // common.CPU1RUNNING = false;
+            System.out.println("I ran on CPU 2");
+        }
+    }
     /**
      * Updates the throughput time in the GUI
      * @param throughput
      */
     public void UpdateThroughput(double throughput)
     {
-        throughputLabel.setText("<html><strong><font color='FFFFFF'><font size = 60px>Current Throughput: " + (throughput / getTimeUnit()) + " process/unit of time</font></font></strong></html>");
+        throughputLabel.setText("<html><strong><font color='FFFFFF'><font size = 60px>Current Throughput: " + (throughput / getTimeUnitTextField()) + " process/unit of time</font></font></strong></html>");
         size = throughputLabel.getPreferredSize();
         throughputLabel.setBounds(150,450,size.width,size.height);
     }
@@ -275,29 +295,37 @@ public class Window extends JPanel implements ActionListener{
      * Gets the time unit text field as an int
      * @return
      */
-    public int getTimeUnit()
+    public int getTimeUnitTextField()
     {
-        return Integer.parseInt(timeUnit.getText());
+        return Integer.parseInt(timeUnitTextField.getText());
     }
 
     //Window component variables
-    private JLabel label1;
-    private JLabel label2;
-    private JLabel label3;
-    private JLabel label4;
-    private JLabel label5;
-    private JLabel label6;
-    private JLabel label7;
+    private JLabel systemStateLabel;
+    private JLabel timeUnitLabel;
+    private JLabel unitTypeLabel;
+    private JLabel cpu1Label;
+    private JLabel cpu2Label;
+    private JLabel filePathLabel;
+    private JLabel filePathWarningLabel;
     private JLabel throughputLabel;
-    private JLabel label9;
-    private Dimension size;
-    private JButton start;
-    private JButton pause;
+    private JLabel waitingProcessLabel;
+
+    private JButton startButton;
+    private JButton pauseButton;
+
     private JTable waitingProcessQueueTable;
     private JTable completedProcessQueueTable;
-    private JScrollPane tablePane;
-    private JScrollPane tablePane2;
-    private JTextField timeUnit;
-    private JTextField fileName;
+
+    private JScrollPane waitingProcessScrollingPane;
+    private JScrollPane completedProcessScrollingPane;
+
+    private JTextField timeUnitTextField;
+    private JTextField fileNameTextField;
+
+    private DefaultTableModel waitingTableModel;
+    private DefaultTableModel completedTableModel;
+
+    private Dimension size;
     public static String file;
 }
