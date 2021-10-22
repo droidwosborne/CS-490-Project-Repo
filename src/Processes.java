@@ -22,7 +22,7 @@ public class Processes {
         if(!CPUIsRunning)
         {
            // try {
-                System.out.println("Process Thread for process: " + processName + ", with service name: " + serviceTime);
+                System.out.println("Process Thread for process: " + processName + ", with service time: " + serviceTime);
                 CPUIsRunning = true;
                // Thread.sleep(serviceTime * 1000);
             sleeper.doInBackground();

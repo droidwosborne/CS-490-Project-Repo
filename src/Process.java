@@ -11,6 +11,7 @@ public class Process {
     private String processID;
     private int serviceTime;
     private int priority;
+    private int currentServiceTime;
 
 
     public Process(int arrivalTime,String processID, int serviceTime, int priority ) {
@@ -32,6 +33,11 @@ public class Process {
         return serviceTime;
     }
 
+    public int getCurrentServiceTime()
+    {
+        return currentServiceTime;
+    }
+
     public int getPriority() {
         return priority;
     }
@@ -50,6 +56,11 @@ public class Process {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public void setCurrentServiceTime (int current)
+    {
+        this.currentServiceTime = current;
     }
 
     @Override

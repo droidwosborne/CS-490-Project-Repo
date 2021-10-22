@@ -36,18 +36,22 @@ public class CPU extends Thread{
             Process current=CpuQueue.removeQueue(); //Grabs process from queue
             System.out.println(current+" TEST "+cpuNumber); //Prints out current process
             window.UpdateWaitTable(current.getProcessID());
-            for(int i=0;i<current.getServiceTime()+1;i++)
+            int serviceTime = current.getServiceTime();
+            current.setCurrentServiceTime(serviceTime);
+            for(int i=0;i<current.getServiceTime();i++)
             {
 
-                System.out.println("Currently running process "+current.getProcessID()+" on thread "+cpuNumber+" with "+(current.getServiceTime()-(i))+" time left");
-                window.UpdateCPU(cpuNumber,current.getProcessID(),(current.getServiceTime()-(i)));
+                System.out.println("Currently running process "+current.getProcessID()+" on thread "+cpuNumber+" with "+current.getCurrentServiceTime()+" time left");
+                //window.UpdateCPU(cpuNumber,current.getProcessID(), current.getCurrentServiceTime());
 
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(Timer.timeUnit);
+                    serviceTime =serviceTime  -1;
+                    current.setCurrentServiceTime(serviceTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
+                window.UpdateCPU(cpuNumber,current.getProcessID(), current.getCurrentServiceTime());
 
             }
             common.totalTime+=current.getServiceTime();
