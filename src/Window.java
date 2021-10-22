@@ -22,6 +22,8 @@ import javax.swing.table.JTableHeader;
  */
 public class Window extends JPanel implements ActionListener{
     public Timer timer = new Timer();
+    private CPU cpu1=new CPU(1,this);
+    private CPU cpu2=new CPU(2,this);
     //Constructor for Window class consisting of components in Panel
     public Window () {
         //Arbitrary size and color appearance of the window
@@ -179,9 +181,9 @@ public class Window extends JPanel implements ActionListener{
             size = systemStateLabel.getPreferredSize();
             systemStateLabel.setBounds(350, 110, size.width, size.height);
             FileReader reader = new FileReader();
+
+
             Processes processInstance = new Processes();
-           // CPU cpu1 =new CPU(1);
-           // cpu1.start();
             // Read the file
             List<String> processesRead = reader.ReadFile(file);
 
@@ -196,6 +198,8 @@ public class Window extends JPanel implements ActionListener{
             {
                 DisplayProcesses(reader, processesRead, i, processInstance);
             }
+            cpu1.start();
+            cpu2.start();
         }
         
         if (action.getSource().equals(pauseButton))
@@ -209,11 +213,11 @@ public class Window extends JPanel implements ActionListener{
                     systemStateLabel.setText("<html><font color='FFFFFF'>"+ "System Paused" +"</font></html>");
                     size = systemStateLabel.getPreferredSize();
                     systemStateLabel.setBounds(350, 110, size.width, size.height);
-                    try {
-                        CPU.sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        CPU.sleep(50);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             });
         }
@@ -250,36 +254,37 @@ public class Window extends JPanel implements ActionListener{
 
             //Set table rows for current process
             waitingTableModel.insertRow(i,new Object[]{processName.peek(),arrivalTime.peek()});
-            completedTableModel.insertRow(i,new Object[]{processName.peek(),serviceTime.peek(),arrivalTime.peek()});
+            completedTableModel.insertRow(i,new Object[]{processName.peek(),arrivalTime.peek(),serviceTime.peek()});
 
-            CPU cpu1 = new CPU(1, this);
-            CPU cpu2 = new CPU(2, this);
-            if (!common.CPU1RUNNING) {
-                runCPU1(process, processName,serviceTime, cpu1);
-            } else if (!common.CPU2RUNNING) {
-                runCPU2(process, processName, serviceTime);
-            }
+            //CPU cpu1 = new CPU(1, this);
+            //CPU cpu2 = new CPU(2, this);
+
+//            if (!common.CPU1RUNNING) {
+//                runCPU1(process, processName,serviceTime, cpu1);
+//            } else if (!common.CPU2RUNNING) {
+//                runCPU2(process, processName, serviceTime);
+//            }
         }
     }
 
-    public void runCPU1(Processes process, Queue<String> processName, Queue<String> serviceTime, CPU cpu1)
-    {
-        synchronized (this) {
-            common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
-            // common.CPU1RUNNING = false;
-            System.out.println("I ran on CPU 1");
-            cpu1.CalculateThroughput();
-        }
-    }
-
-    public void runCPU2(Processes process, Queue<String> processName, Queue<String> serviceTime)
-    {
-        synchronized (this) {
-            common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
-            // common.CPU1RUNNING = false;
-            System.out.println("I ran on CPU 2");
-        }
-    }
+//    public void runCPU1(Processes process, Queue<String> processName, Queue<String> serviceTime, CPU cpu1)
+//    {
+//        synchronized (this) {
+//            common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
+//            // common.CPU1RUNNING = false;
+//            System.out.println("I ran on CPU 1");
+//            cpu1.CalculateThroughput();
+//        }
+//    }
+//
+//    public void runCPU2(Processes process, Queue<String> processName, Queue<String> serviceTime)
+//    {
+//        synchronized (this) {
+//            common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
+//            // common.CPU1RUNNING = false;
+//            System.out.println("I ran on CPU 2");
+//        }
+//    }
     /**
      * Updates the throughput time in the GUI
      * @param throughput
@@ -290,6 +295,54 @@ public class Window extends JPanel implements ActionListener{
         size = throughputLabel.getPreferredSize();
         throughputLabel.setBounds(150,450,size.width,size.height);
     }
+    public void UpdateCPU(int cpu,String exec, int time)
+    {
+
+
+        //if(waitingProcessQueueTable.getModel().getValueAt(0,0).toString().trim().equals(exec)) System.out.println("exec");
+        //System.out.println(waitingProcessQueueTable.getModel().getValueAt(0,0).toString());
+        //System.out.println(exec);
+        switch(cpu){
+            case 1:
+                cpu1Label.setText("<html>" + "cpu 1" + "<br/>exec: " + exec + "<br/>time remaining = "
+                        + time + "</html>");
+                break;
+            case 2:
+                cpu2Label.setText("<html>" + "cpu 1" + "<br/>exec: " + exec + "<br/>time remaining = "
+                        + time + "</html>");
+                break;
+            case 3:
+                break;
+        }
+
+
+    }
+    public void UpdateWaitTable(String exec) {
+
+        for(int i = 0; i < waitingProcessQueueTable.getRowCount(); i++) {//For each row
+            for (int j = 0; j < waitingProcessQueueTable.getColumnCount(); j++) {//For each column in that row
+                if (waitingProcessQueueTable.getModel().getValueAt(i, j).toString().trim().equals(exec)) {
+                    System.out.println("A");
+                    waitingTableModel.removeRow(i);
+                }
+            }
+        }
+    }
+    public void UpdateFinishedTable(String exec, int totaltime, int arrival, int service){
+        int temp=0;
+        for(int i = 0; i < completedProcessQueueTable.getRowCount(); i++) {//For each row
+                if(!(completedProcessQueueTable.getModel().getValueAt(i, 0)==null)) {
+                    if (completedProcessQueueTable.getModel().getValueAt(i, 0).toString().trim().equals(exec)) {
+                        if(i>0) temp=Integer.parseInt(completedProcessQueueTable.getModel().getValueAt(i-1,3).toString());
+                        completedTableModel.setValueAt(totaltime-temp, i, 3);
+                        completedTableModel.setValueAt((totaltime-temp)+arrival, i, 4);
+                        completedTableModel.setValueAt(((totaltime-temp)+arrival)/service, i, 5);
+
+                    }
+                }
+        }
+    }
+
 
     /**
      * Gets the time unit text field as an int

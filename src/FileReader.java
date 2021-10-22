@@ -56,11 +56,18 @@ public class FileReader {
                 System.out.println(line);
             }
         }
+
         catch (IOException e)
         {
                 System.out.println("IO Exception!");
                 return null;
         }
+
+        //System.out.println("THIS iS PRIUNTING OUT THE STATIC QUEUE" + " = " + CpuQueue.removeQueue());
+        //System.out.println("THIS iS PRIUNTING OUT THE STATIC QUEUE" + " = " + CpuQueue.removeQueue());
+        //System.out.println("THIS iS PRIUNTING OUT THE STATIC QUEUE" + " = " + CpuQueue.removeQueue());
+
+
         return processes;
     }
 
@@ -128,7 +135,7 @@ public class FileReader {
     public Queue<String> getServiceTime(List<String> processes, int i)
     {
         finalComma = processes.get(i).lastIndexOf(",");
-        System.out.println("Final Comma: " + finalComma);
+        //System.out.println("Final Comma: " + finalComma);
         Queue<String> time = new LinkedList<>();
         time.add(processes.get(i).substring(secondComma + 2, finalComma));
         if(time.contains(" "))

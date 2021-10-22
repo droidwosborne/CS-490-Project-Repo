@@ -8,7 +8,7 @@ package src;
 import java.util.*;
 public class CpuQueue {
     //Static Queue so that it can be accessed anywhere
-    private static Queue<Process> queue = new LinkedList<Process>();
+    public static Queue<Process> queue = new LinkedList<Process>();
     public CpuQueue() {
         FileReader reader = new FileReader();
         Window window = new Window();

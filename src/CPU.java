@@ -11,31 +11,67 @@ import java.util.List;
 public class CPU extends Thread{
     private int cpuNumber;
     private Window window;
-    private List<Process> processes = new LinkedList();
 
     public CPU(int cpuNumber, Window window) {
         this.cpuNumber = cpuNumber;
         this.window = window;
+
     }
 
     public void run() {
         Timer time=new Timer();
+        //CpuQueue.printQueue();
+        //System.out.println("TEST^^");
         //Prints out which CPU this is and the size of the CPU Queue, obviously if the CPU queue is empty it can't process anything
-        System.out.println("thread: "+cpuNumber);
-        System.out.println(CpuQueue.queueSize());
+        //System.out.println("thread: "+cpuNumber);
+        //System.out.println(CpuQueue.queueSize());
         while(CpuQueue.queueSize()>0)
-
         {
+//            try {
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+
             Process current=CpuQueue.removeQueue(); //Grabs process from queue
-            System.out.println(current); //Prints out current process
-            System.out.println(cpuNumber);
+            System.out.println(current+" TEST "+cpuNumber); //Prints out current process
+            window.UpdateWaitTable(current.getProcessID());
+            for(int i=0;i<current.getServiceTime()+1;i++)
+            {
+
+                System.out.println("Currently running process "+current.getProcessID()+" on thread "+cpuNumber+" with "+(current.getServiceTime()-(i))+" time left");
+                window.UpdateCPU(cpuNumber,current.getProcessID(),(current.getServiceTime()-(i)));
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+            common.totalTime+=current.getServiceTime();
+            common.completedProcesses++;
+            window.UpdateFinishedTable(current.getProcessID(),common.totalTime, current.getArrivalTime(), current.getServiceTime());
+            CalculateThroughput();
+
+
+
+
+
+
+
+
+
+
+
+
             //This next bit will just sleep for however long depending on how long the one unit of time is set to in the GUI, then it will decrement the serviceTime in the process by 1, and then sleep again in a loop
             //So NYI
-            try {
-                time.waitServiceTime(current.getServiceTime());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+
+
+
         }
 
     }
@@ -47,4 +83,30 @@ public class CPU extends Thread{
         System.out.println("Throughput: " + throughput);
         window.UpdateThroughput(throughput);
     }
+    public boolean RunProcess(String processName, int serviceTime, boolean CPUIsRunning)
+    {
+        // new Threading();
+        boolean success = false;
+        Sleeper sleeper = new Sleeper();
+
+        // Ensure the passed in CPU is not running something else
+        if(!CPUIsRunning)
+        {
+            // try {
+            System.out.println("Process Thread for process: " + processName + ", with service name: " + serviceTime);
+            CPUIsRunning = true;
+            // Thread.sleep(serviceTime * 1000);
+            sleeper.doInBackground();
+
+            common.completedProcesses += 1;
+            success = true;
+            //  }// catch (InterruptedException e) {
+            // System.out.println("The Process thread is interrupted");
+            //}
+        }
+        System.out.println("Exiting the Process thread");
+        return success;
+    }
+
+
 }
