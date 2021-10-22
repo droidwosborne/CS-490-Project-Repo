@@ -193,6 +193,7 @@ public class Window extends JPanel implements ActionListener{
             }
         }
 
+
         if (action.getSource().equals(pause))
         {
             label1.setText("<html><font color='FFFFFF'>"+ "System Paused" +"</font></html>");
@@ -239,16 +240,25 @@ public class Window extends JPanel implements ActionListener{
 
             // Set arrival time in GUI
             completedProcessQueueTable.setValueAt(arrivalTime.peek(),i, 1);
+            CPU cpu1 = new CPU(1, this);
+            CPU cpu2 = new CPU(2, this);
+                if (!common.CPU1RUNNING) {
+                    common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
+                   // common.CPU1RUNNING = false;
+                    System.out.println("I ran on CPU 1");
 
-            if(!common.CPU1RUNNING)
-            {
-                if(process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING));
-                common.CPU1RUNNING = false;
-                CPU cpu1 = new CPU(1, this);
-                cpu1.CalculateThroughput();
-            }
+                    cpu1.CalculateThroughput();
+                } else if (!common.CPU2RUNNING) {
+                    process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU2RUNNING);
+                    common.CPU2RUNNING = false;
+                    System.out.println("I ran on CPU 2");
+
+                //    cpu2.CalculateThroughput();
+                }
+
         }
     }
+
 
     /**
      * Updates the throughput time in the GUI
