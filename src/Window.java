@@ -292,7 +292,7 @@ public class Window extends JPanel implements ActionListener{
      */
     public void UpdateThroughput(double throughput)
     {
-        throughputLabel.setText("<html><strong><font color='FFFFFF'><font size = 60px>Current Throughput: " + (throughput / getTimeUnitTextField()) + " process/unit of time</font></font></strong></html>");
+        throughputLabel.setText("<html><strong><font color='FFFFFF'><font size = 60px>Current Throughput: " + (throughput) + " process/unit of time</font></font></strong></html>");
         size = throughputLabel.getPreferredSize();
         throughputLabel.setBounds(150,450,size.width,size.height);
     }
