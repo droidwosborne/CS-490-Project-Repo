@@ -5,38 +5,18 @@
  */
 package src;
 
-import java.io.*;
-import java.util.List;
-import java.util.Scanner;
-
-
+/**
+ * Main class where the process begins
+ */
 public class Main {
 
     public static void main(String[] args) {
 
+        // Create the GUI
         Frame processWindow = new Frame();
         Window processPanel = new Window();
         processWindow.add(processPanel);
         processWindow.pack();
         processWindow.setVisible(true);
-
-        FileReader reader = new FileReader();
-        Processes process = new Processes();
-
-        // Read the file. The file will need to be a variable later
-        List<String> processes = reader.ReadFile(Window.file);
-       /*for (int i = 0; i < processes.size(); i++)
-        {
-            processPanel.DisplayProcesses(reader, processes, i, process);
-        }*/
-        /*Right now the CPU Queue is empty because it doesn't get filled until the start button on the GUI is pushed. If you want to test it then make a CPU instance at the end of the
-            actionPerformed function since that is when the CPU Queue is filled. Depending on how we implement it, these next two lines might be here or somewhere else or where ever, as long as the CPU Queue is filled
-            which happens when the FileReader class does its thing it will work.
-         */
-       /* CPU cpu1 =new CPU(1, processPanel);
-        cpu1.run();
-        CPU cpu2 =new CPU(2, processPanel);
-        cpu2.run();*/
-       // cpu1.CalculateThroughput();
     }
 }
