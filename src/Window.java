@@ -24,6 +24,7 @@ public class Window extends JPanel implements ActionListener{
     public Timer timer = new Timer();
     private CPU cpu1=new CPU(1,this);
     private CPU cpu2=new CPU(2,this);
+    private boolean firstStart=true;
     //Constructor for Window class consisting of components in Panel
     public Window () {
         //Arbitrary size and color appearance of the window
@@ -178,33 +179,42 @@ public class Window extends JPanel implements ActionListener{
         // Start button pressed
         if(action.getSource().equals(startButton))
         {
-            systemStateLabel.setText("<html><font color='FFFFFF'>"+ "System Running" +"</font></html>");
-            size = systemStateLabel.getPreferredSize();
-            systemStateLabel.setBounds(350, 110, size.width, size.height);
-            FileReader reader = new FileReader();
+            if(firstStart) {
+                firstStart=false;
+                systemStateLabel.setText("<html><font color='FFFFFF'>" + "System Running" + "</font></html>");
+                size = systemStateLabel.getPreferredSize();
+                systemStateLabel.setBounds(350, 110, size.width, size.height);
+                FileReader reader = new FileReader();
 
 
-            Processes processInstance = new Processes();
-            // Read the file
-            List<String> processesRead = reader.ReadFile(file);
+                Processes processInstance = new Processes();
+                // Read the file
+                List<String> processesRead = reader.ReadFile(file);
 
-            if(processesRead == null)
-            {
-                filePathWarningLabel.setVisible(true);
+                if (processesRead == null) {
+                    filePathWarningLabel.setVisible(true);
+                }
+
+                Queue<String> tempServ = new LinkedList<>();
+
+                for (int i = 0; i < processesRead.size(); i++) {
+                    DisplayProcesses(reader, processesRead, i, processInstance);
+                }
+                cpu1.start();
+                cpu2.start();
             }
+            else {
+                cpu1.resume();
+                cpu2.resume();
 
-            Queue<String> tempServ = new LinkedList<>();
-
-            for (int i = 0; i < processesRead.size(); i++)
-            {
-                DisplayProcesses(reader, processesRead, i, processInstance);
             }
-            cpu1.start();
-            cpu2.start();
         }
+
         
         if (action.getSource().equals(pauseButton))
         {
+            cpu1.suspend();
+            cpu2.suspend();
             /*
              * Runs code to update GUI on event thread (not certain correct)
              */
@@ -214,11 +224,7 @@ public class Window extends JPanel implements ActionListener{
                     systemStateLabel.setText("<html><font color='FFFFFF'>"+ "System Paused" +"</font></html>");
                     size = systemStateLabel.getPreferredSize();
                     systemStateLabel.setBounds(350, 110, size.width, size.height);
-//                    try {
-//                        CPU.sleep(50);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
+//
                 }
             });
         }

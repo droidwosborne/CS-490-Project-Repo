@@ -12,6 +12,11 @@ public class CPU extends Thread{
     private int cpuNumber;
     private Window window;
 
+    private volatile boolean running = true;
+    private volatile boolean paused = false;
+    private final Object pauseLock = new Object();
+
+
     public CPU(int cpuNumber, Window window) {
         this.cpuNumber = cpuNumber;
         this.window = window;
@@ -19,65 +24,48 @@ public class CPU extends Thread{
     }
 
     public void run() {
-        Timer time=new Timer();
+        Timer time = new Timer();
 
         //Prints out which CPU this is and the size of the CPU Queue, obviously if the CPU queue is empty it can't process anything
 
-        while(CpuQueue.queueSize()>0)
-        {
+        while (CpuQueue.queueSize() > 0) {
 //
-
 
 
             Process current = CpuQueue.removeQueue(cpuNumber);
 
 
-
-
-
-            System.out.println(current+" TEST "+cpuNumber); //Prints out current process
+            System.out.println(current + " TEST " + cpuNumber); //Prints out current process
             window.UpdateWaitTable(current.getProcessID());
             int serviceTime = current.getServiceTime();
             current.setCurrentServiceTime(serviceTime);
-            for(int i=0;i<current.getServiceTime();i++)
-            {
+            for (int i = 0; i < current.getServiceTime(); i++) {
 
-                System.out.println("Currently running process "+current.getProcessID()+" on thread "+cpuNumber+" with "+current.getCurrentServiceTime()+" time left");
+                System.out.println("Currently running process " + current.getProcessID() + " on thread " + cpuNumber + " with " + current.getCurrentServiceTime() + " time left");
                 //window.UpdateCPU(cpuNumber,current.getProcessID(), current.getCurrentServiceTime());
 
                 try {
                     Thread.sleep(Timer.timeUnit);
-                    serviceTime =serviceTime  -1;
+                    serviceTime = serviceTime - 1;
                     current.setCurrentServiceTime(serviceTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                window.UpdateCPU(cpuNumber,current.getProcessID(), current.getCurrentServiceTime());
+                window.UpdateCPU(cpuNumber, current.getProcessID(), current.getCurrentServiceTime());
 
             }
-            common.totalTime+=current.getServiceTime();
+            common.totalTime += current.getServiceTime();
             common.completedProcesses++;
-            window.UpdateFinishedTable(current.getProcessID(),common.totalTime, current.getArrivalTime(), current.getServiceTime());
+            window.UpdateFinishedTable(current.getProcessID(), common.totalTime, current.getArrivalTime(), current.getServiceTime());
             CalculateThroughput();
-
-
-
-
-
-
-
-
-
-
 
 
             //This next bit will just sleep for however long depending on how long the one unit of time is set to in the GUI, then it will decrement the serviceTime in the process by 1, and then sleep again in a loop
             //So NYI
 
 
-
-
         }
+
 
     }
 
