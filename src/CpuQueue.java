@@ -18,8 +18,10 @@ public class CpuQueue {
     public static void addQueue(Process a){
         queue.add(a);
     }
-    public static Process removeQueue(){
+    public synchronized static Process removeQueue(int cpu){
+
         return queue.remove();
+
     }
     public static int queueSize(){
         return queue.size();

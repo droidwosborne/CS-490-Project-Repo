@@ -20,20 +20,20 @@ public class CPU extends Thread{
 
     public void run() {
         Timer time=new Timer();
-        //CpuQueue.printQueue();
-        //System.out.println("TEST^^");
         //Prints out which CPU this is and the size of the CPU Queue, obviously if the CPU queue is empty it can't process anything
-        //System.out.println("thread: "+cpuNumber);
-        //System.out.println(CpuQueue.queueSize());
+
         while(CpuQueue.queueSize()>0)
         {
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+//
 
-            Process current=CpuQueue.removeQueue(); //Grabs process from queue
+
+
+            Process current = CpuQueue.removeQueue(cpuNumber);
+
+
+
+
+
             System.out.println(current+" TEST "+cpuNumber); //Prints out current process
             window.UpdateWaitTable(current.getProcessID());
             int serviceTime = current.getServiceTime();
