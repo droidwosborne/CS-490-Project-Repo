@@ -8,11 +8,15 @@ package src;
 import java.awt.FlowLayout;
 import javax.swing.JFrame;
 
-//Extends JFrame to create application window
+/**
+ * Extends JFrame to create application window
+ */
 public class Frame extends JFrame
 {
 
-	//Constructs the application frame
+	/**
+	 * Constructs the application frame
+	 */
 	public Frame()
 	{
 		//Adds title and closing functionality to window

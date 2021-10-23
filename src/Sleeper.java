@@ -1,10 +1,15 @@
 package src;
 
 import javax.swing.*;
-import java.util.Date;
-import java.time.LocalDateTime;
 
+/**
+ * Acts as a way to make the program sleep
+ */
 public class Sleeper extends SwingWorker {
+    /**
+     * Sleep in the background
+     * @return
+     */
     @Override
     public String doInBackground() {
         try {
@@ -15,10 +20,4 @@ public class Sleeper extends SwingWorker {
         System.out.println("pass");
         return "pass";
     }
-
-    public void dateTimeChecker()
-    {
-
-    }
-
 }

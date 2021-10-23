@@ -9,15 +9,23 @@ import java.io.*;
 import java.lang.*;
 import java.util.*;
 
-
+/**
+ * FileReader gives the ability to read in a file from a user defined path
+ */
 public class FileReader {
-    // Default constructor for the class
+
+    /**
+     * Default constructor of FileReader
+     */
     public FileReader()
     {
         System.out.println("I am the file reader");
     }
 
-    // Read an input file specified elsewhere
+    /**
+     *  Read an input file specified elsewhere
+     * @param inFile is input file to read
+     */
     public List<String> ReadFile(String inFile)
     {
         // Declare the variables to read the file
@@ -63,20 +71,23 @@ public class FileReader {
                 return null;
         }
 
-        //System.out.println("THIS iS PRIUNTING OUT THE STATIC QUEUE" + " = " + CpuQueue.removeQueue());
-        //System.out.println("THIS iS PRIUNTING OUT THE STATIC QUEUE" + " = " + CpuQueue.removeQueue());
-        //System.out.println("THIS iS PRIUNTING OUT THE STATIC QUEUE" + " = " + CpuQueue.removeQueue());
-
-
         return processes;
     }
 
+    /**
+     * Reads a custom file in
+     * @param inFile is the input file
+     * @return a queue of the processes
+     */
     public Queue<Process> ReadFile2(String inFile)
     {
+        //Set up default values
         FileInputStream file = null;
         BufferedReader br = null;
         Queue <Process> processes = new LinkedList <Process>();
         String line;
+
+        // Creates a way to read the file if the file exists
         if (file != null)
             br = new BufferedReader(new InputStreamReader(file));
 
@@ -107,13 +118,14 @@ public class FileReader {
      */
     public Queue<String> getProcessName(List<String> processes, int i)
     {
+        // Find the commas of the lines to separate each part
         firstComma = processes.get(i).indexOf(" ", 1);
         secondComma = processes.get(i).indexOf(", ", firstComma + 1);
 
-       // System.out.println("First: " + firstComma + " Second:" + secondComma);
         Queue<String> processName = new LinkedList<String>();
         Queue<String> temp = new LinkedList<>();
         processName.add(processes.get(i).substring(firstComma, secondComma));
+
         if(processName.contains(" "))
         {
             // Pop the element and place into temp queue
@@ -122,7 +134,7 @@ public class FileReader {
             tempName = tempName.substring(1);
             processName.add(tempName);
         }
-       // System.out.println("Name:" + processName);
+
         return processName;
     }
 
@@ -134,14 +146,14 @@ public class FileReader {
      */
     public Queue<String> getServiceTime(List<String> processes, int i)
     {
+        // Get the comma after the service time
         finalComma = processes.get(i).lastIndexOf(",");
-        //System.out.println("Final Comma: " + finalComma);
+
         Queue<String> time = new LinkedList<>();
         time.add(processes.get(i).substring(secondComma + 2, finalComma));
         if(time.contains(" "))
         {
             // Pop the element and place into temp queue
-           // temp.add(processName.remove());
             String tempName = time.peek();
             tempName = tempName.substring(1);
             time.add(tempName);
@@ -150,22 +162,27 @@ public class FileReader {
         System.out.println("Time: " + time);
         return time;
     }
+
+    /**
+     * Get the arrival time of the process
+     * @param processes is a list of processes to get the arrival time of
+     * @param i is the index to get the arrival time of
+     * @return a queue of the arrival times
+     */
     public Queue<String> getArrivalTime(List<String> processes, int i)
     {
-        //finalComma = processes.get(i).lastIndexOf(",");
-        //System.out.println("Final Comma: " + finalComma);
+        // Get the comma after the arrival time
         firstComma = processes.get(i).indexOf(" ", 1);
         Queue<String> time = new LinkedList<>();
         time.add(processes.get(i).substring(0, firstComma-1));
         if(time.contains(" "))
         {
             // Pop the element and place into temp queue
-            // temp.add(processName.remove());
             String tempName = time.peek();
             tempName = tempName.substring(1);
             time.add(tempName);
         }
-        //System.out.println("Time: " + time);
+
         return time;
     }
 

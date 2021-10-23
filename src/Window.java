@@ -22,10 +22,12 @@ import javax.swing.table.JTableHeader;
  * implementing ActionListener to allow for actions on button click and text entry.
  */
 public class Window extends JPanel implements ActionListener{
+    // Declare default fields
     public Timer timer = new Timer();
     private CPU cpu1=new CPU(1,this);
     private CPU cpu2=new CPU(2,this);
     private boolean firstStart=true;
+
     //Constructor for Window class consisting of components in Panel
     public Window () {
         //Arbitrary size and color appearance of the window
@@ -47,6 +49,12 @@ public class Window extends JPanel implements ActionListener{
         size = timeUnitLabel.getPreferredSize();
         timeUnitLabel.setBounds(300, 160, size.width, size.height);
         add(timeUnitLabel);
+
+        //Label stating to press enter when time unit is entered
+        timeUnitInstructionLabel = new JLabel("<html><font color='FFFFFF'>Press 'Enter' once unit is in</font></html>");
+        size = timeUnitInstructionLabel.getPreferredSize();
+        timeUnitInstructionLabel.setBounds(300, 175, size.width, size.height);
+        add(timeUnitInstructionLabel);
 
         //Label stating time unit of ms
         unitTypeLabel = new JLabel("<html><font color='FFFFFF'>ms</font></html>");
@@ -87,6 +95,12 @@ public class Window extends JPanel implements ActionListener{
         size = filePathLabel.getPreferredSize();
         filePathLabel.setBounds(50, 40, size.width, size.height);
         add(filePathLabel);
+
+        //Label stating to press enter when file path is entered
+        filePathInstructionLabel = new JLabel("<html><font color='FFFFFF'>Press 'Enter' once file path is in</font></html>");
+        size = filePathInstructionLabel.getPreferredSize();
+        filePathInstructionLabel.setBounds(50, 75, size.width, size.height);
+        add(filePathInstructionLabel);
 
         //Label stating invalid file path warning
         filePathWarningLabel = new JLabel("<html><font color='FF0000'>Invalid File Path</font></html>");
@@ -186,34 +200,37 @@ public class Window extends JPanel implements ActionListener{
                 size = systemStateLabel.getPreferredSize();
                 systemStateLabel.setBounds(350, 110, size.width, size.height);
                 FileReader reader = new FileReader();
-
-
                 Processes processInstance = new Processes();
+
                 // Read the file
                 List<String> processesRead = reader.ReadFile(file);
 
+                // Ensures there are processes
                 if (processesRead == null) {
                     filePathWarningLabel.setVisible(true);
                 }
 
                 Queue<String> tempServ = new LinkedList<>();
 
+                // Run the DisplayProcesses method for each process in the queue
                 for (int i = 0; i < processesRead.size(); i++) {
                     DisplayProcesses(reader, processesRead, i, processInstance);
                 }
+                // Start both CPUs
                 cpu1.start();
                 cpu2.start();
             }
+            // Resume both CPUs if the system is paused
             else {
                 cpu1.resume();
                 cpu2.resume();
-
             }
         }
 
-        
+        // Paused button pressed
         if (action.getSource().equals(pauseButton))
         {
+            // Pauses both CPUs
             cpu1.suspend();
             cpu2.suspend();
             /*
@@ -229,29 +246,39 @@ public class Window extends JPanel implements ActionListener{
                 }
             });
         }
-
+        // If the user presses the enter key after editing the time unit text field
         if (action.getSource().equals(timeUnitTextField))
         {
+            // Get the text from the field and apply it to the timer
             String input = timeUnitTextField.getText();
             int inputInt = Integer.parseInt(input);
             timer.setTimeUnit(inputInt);
             System.out.println(inputInt);
         }
+
+        // If the user presses the enter key after editing the file name text field
         if (action.getSource().equals(fileNameTextField))
         {
             filePathWarningLabel.setVisible(false);
             file = fileNameTextField.getText();
         }
-        //This is just showing in the console that the CPU Queue is filled.
-        //CpuQueue.printQueue();
     }
 
+    /**
+     * Display the processes in the different GUI queues
+     * @param reader the reader to read the file
+     * @param processes the list of process
+     * @param i is the index of the current process
+     * @param process  is the process instance
+     */
     public void DisplayProcesses(FileReader reader, List<String> processes, int i, Processes process)
     {
         Queue<String> temp = new LinkedList<>();
+
         // Makes sure there are rows available
         if(i < waitingProcessQueueTable.getRowCount())
         {
+            // Gets each value from the reader
             Queue<String> processName = reader.getProcessName(processes, i);
             Queue<String> serviceTime = reader.getServiceTime(processes, i);
             Queue<String> arrivalTime = reader.getArrivalTime(processes, i);
@@ -263,36 +290,9 @@ public class Window extends JPanel implements ActionListener{
             //Set table rows for current process
             waitingTableModel.insertRow(i,new Object[]{processName.peek(),arrivalTime.peek()});
             completedTableModel.insertRow(i,new Object[]{processName.peek(),arrivalTime.peek(),serviceTime.peek()});
-
-            //CPU cpu1 = new CPU(1, this);
-            //CPU cpu2 = new CPU(2, this);
-
-//            if (!common.CPU1RUNNING) {
-//                runCPU1(process, processName,serviceTime, cpu1);
-//            } else if (!common.CPU2RUNNING) {
-//                runCPU2(process, processName, serviceTime);
-//            }
         }
     }
 
-//    public void runCPU1(Processes process, Queue<String> processName, Queue<String> serviceTime, CPU cpu1)
-//    {
-//        synchronized (this) {
-//            common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
-//            // common.CPU1RUNNING = false;
-//            System.out.println("I ran on CPU 1");
-//            cpu1.CalculateThroughput();
-//        }
-//    }
-//
-//    public void runCPU2(Processes process, Queue<String> processName, Queue<String> serviceTime)
-//    {
-//        synchronized (this) {
-//            common.CPU1RUNNING = !process.RunProcess(processName.peek(), Integer.parseInt(serviceTime.peek()), common.CPU1RUNNING);
-//            // common.CPU1RUNNING = false;
-//            System.out.println("I ran on CPU 2");
-//        }
-//    }
     /**
      * Updates the throughput time in the GUI
      * @param throughput
@@ -303,13 +303,16 @@ public class Window extends JPanel implements ActionListener{
         size = throughputLabel.getPreferredSize();
         throughputLabel.setBounds(150,450,size.width,size.height);
     }
+
+    /**
+     * Update the CPU in the GUI
+     * @param cpu is the cpu to update
+     * @param exec is the running process
+     * @param time is the time remaining on the CPU
+     */
     public void UpdateCPU(int cpu,String exec, int time)
     {
 
-
-        //if(waitingProcessQueueTable.getModel().getValueAt(0,0).toString().trim().equals(exec)) System.out.println("exec");
-        //System.out.println(waitingProcessQueueTable.getModel().getValueAt(0,0).toString());
-        //System.out.println(exec);
         switch(cpu){
             case 1:
                 cpu1Label.setText("<html>" + "cpu 1" + "<br/>exec: " + exec + "<br/>time remaining = "
@@ -325,8 +328,14 @@ public class Window extends JPanel implements ActionListener{
 
 
     }
+
+    /**
+     * Update the wait table with the processes
+     * @param exec is the executing process
+     */
     public void UpdateWaitTable(String exec) {
 
+        // Goes through all the processes in the queue and add them to the  queue
         for(int i = 0; i < waitingProcessQueueTable.getRowCount(); i++) {//For each row
             for (int j = 0; j < waitingProcessQueueTable.getColumnCount(); j++) {//For each column in that row
                 if (waitingProcessQueueTable.getModel().getValueAt(i, j).toString().trim().equals(exec)) {
@@ -336,8 +345,18 @@ public class Window extends JPanel implements ActionListener{
             }
         }
     }
+
+    /**
+     * Updates the finished GUI table
+     * @param exec is the process executing
+     * @param totaltime is the total time the program took
+     * @param arrival is the arrival time
+     * @param service is the service time
+     */
     public void UpdateFinishedTable(String exec, int totaltime, int arrival, int service){
         int temp=0;
+
+        // Loop through each item in the completed queue and place it in the GUI table
         for(int i = 0; i < completedProcessQueueTable.getRowCount(); i++) {//For each row
                 if(!(completedProcessQueueTable.getModel().getValueAt(i, 0)==null)) {
                     if (completedProcessQueueTable.getModel().getValueAt(i, 0).toString().trim().equals(exec)) {
@@ -364,10 +383,12 @@ public class Window extends JPanel implements ActionListener{
     //Window component variables
     private JLabel systemStateLabel;
     private JLabel timeUnitLabel;
+    private JLabel timeUnitInstructionLabel;
     private JLabel unitTypeLabel;
     private JLabel cpu1Label;
     private JLabel cpu2Label;
     private JLabel filePathLabel;
+    private JLabel filePathInstructionLabel;
     private JLabel filePathWarningLabel;
     private JLabel throughputLabel;
     private JLabel waitingProcessLabel;
