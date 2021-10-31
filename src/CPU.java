@@ -32,10 +32,11 @@ public class CPU extends Thread{
      */
     public void run() {
         Timer time = new Timer();
-
+        Scheduler scheduler = new Scheduler();
+        scheduler.RoundRobin(window.getTimeSliceTextField());
         //Prints out which CPU this is and the size of the CPU Queue. If the CPU queue is empty it can't process anything
 
-        while (CpuQueue.queueSize() > 0) {
+       /* while (CpuQueue.queueSize() > 0) {
 
             // Gets the current process and removes it from the queue
             Process current = CpuQueue.removeQueue(cpuNumber);
@@ -58,6 +59,7 @@ public class CPU extends Thread{
                     Thread.sleep(Timer.timeUnit);
                     serviceTime = serviceTime - 1;
                     current.setCurrentServiceTime(serviceTime);
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -72,7 +74,7 @@ public class CPU extends Thread{
             // Updates the GUI finished table and the throughput
             window.UpdateFinishedTable(current.getProcessID(), common.totalTime, current.getArrivalTime(), current.getServiceTime());
             CalculateThroughput();
-        }
+        }*/
 
 
     }
