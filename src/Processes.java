@@ -21,17 +21,14 @@ public class Processes {
         // Ensure the passed in CPU is not running something else
         if(!CPUIsRunning)
         {
-           // try {
-                System.out.println("Process Thread for process: " + processName + ", with service time: " + serviceTime);
-                CPUIsRunning = true;
-               // Thread.sleep(serviceTime * 1000);
+
+            System.out.println("Process Thread for process: " + processName + ", with service time: " + serviceTime);
+            CPUIsRunning = true;
             sleeper.doInBackground();
 
-                common.completedProcesses += 1;
-                success = true;
-          //  }// catch (InterruptedException e) {
-               // System.out.println("The Process thread is interrupted");
-            //}
+            common.completedProcesses += 1;
+            success = true;
+
         }
         System.out.println("Exiting the Process thread");
         return success;

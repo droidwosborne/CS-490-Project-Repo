@@ -18,5 +18,8 @@ public class Main {
         processWindow.add(processPanel);
         processWindow.pack();
         processWindow.setVisible(true);
+
+       // Scheduler scheduler = new Scheduler();
+       // scheduler.RoundRobin();
     }
 }

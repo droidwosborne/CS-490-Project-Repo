@@ -309,6 +309,7 @@ public class Window extends JPanel implements ActionListener{
             }
             // Resume both CPUs if the system is paused
             else {
+                systemStateLabel.setText("<html><font color='FFFFFF'>" + "System Running" + "</font></html>");
                 cpu1.resume();
                 cpu2.resume();
             }
@@ -484,6 +485,12 @@ public class Window extends JPanel implements ActionListener{
     {
         return Integer.parseInt(timeUnitTextField.getText());
     }
+
+    public int getTimeSliceTextField()
+    {
+        return Integer.parseInt(sliceLengthTextField.getText());
+    }
+
 
     //Window component variables
     private JLabel systemStateLabel;
