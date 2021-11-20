@@ -5,12 +5,13 @@
  */
 package src;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Holds all of the CPUs and their processes
  */
-public class CpuQueue {
+public class CpuQueue2 {
     //Static Queue so that it can be accessed anywhere
     public static Queue<Process> queue = new LinkedList<Process>();
     public static Queue<Process> hrrnQueue = new LinkedList<Process>();
@@ -18,7 +19,7 @@ public class CpuQueue {
     /**
      * Default constructor
      */
-    public CpuQueue() {
+    public CpuQueue2() {
         FileReader reader = new FileReader();
         Window window = new Window();
         queue = reader.ReadFile2(window.file);
