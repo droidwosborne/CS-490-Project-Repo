@@ -4,3 +4,4 @@
 4, process d, 3, 1
 7, process e, 5, 1
 6, process f, 4, 1
+8, process g
