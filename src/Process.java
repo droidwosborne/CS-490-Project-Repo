@@ -16,6 +16,7 @@ public class Process {
     private int serviceTime;
     private int priority;
     private int currentServiceTime;
+    private double R;
 
     /**
      * Default constructor to set up variables
@@ -117,6 +118,15 @@ public class Process {
      * Turns everything into one string
      * @return
      */
+
+    public void setR (double responseRatio)
+    {
+        this.R = responseRatio;
+    }
+    public double getR ()
+    {
+        return this.R;
+    }
     @Override
     public String toString() {
         return "Process{" +

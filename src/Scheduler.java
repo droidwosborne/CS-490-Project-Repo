@@ -5,6 +5,7 @@ import java.util.Queue;
 
 public class Scheduler {
     private Window window;
+
     public Scheduler(Window cpuWindow) {
         System.out.println("I am the scheduler");
         this.window = cpuWindow;
@@ -16,8 +17,8 @@ public class Scheduler {
         float _timeSlice = timeSlice;
         Queue<Process> remainingProcesses = new LinkedList<>();
         Queue<String> _processes = new LinkedList<String>();
-        _processes.add("0, 3, Process A, 1");
-        _processes.add("2, 2, Process B, 1");
+        //_processes.add("0, 3, Process A, 1");
+        //_processes.add("2, 2, Process B, 1");
         System.out.println(_processes);
         boolean timeSliceUp = false;
         int timeRunning = 0;
@@ -52,16 +53,13 @@ public class Scheduler {
                     timeRunning++;
 
                     // If the process has been running for longer than the allotted time, move it to the back of the queue
-                    if (timeRunning >= _timeSlice)
-                    {
+                    if (timeRunning >= _timeSlice) {
                         int remainingTime = current.getServiceTime() - timeRunning;
                         timeRunning = 0;
                         current.setServiceTime(remainingTime);
                         CpuQueue.addQueue(current);
                         break;
-                    }
-                    else if (current.getServiceTime() <= 0)
-                    {
+                    } else if (current.getServiceTime() <= 0) {
                         timeRunning = 0;
                         break;
                     }
@@ -72,10 +70,34 @@ public class Scheduler {
             }
             common.totalTime += timeSlice;
             common.completedProcesses++;
-            if(processServiceTime != 0) {
+            if (processServiceTime != 0) {
                 window.UpdateFinishedTable(2, current.getProcessID(), common.totalTime, current.getArrivalTime(), processServiceTime);
             }
         }
         System.out.println("Finished!");
+    }
+
+    public void HRRN() {
+        System.out.println("I am HRRN");
+        int waitTime = 0;
+        Queue<Process> remainingProcesses = new LinkedList<>();
+        Queue<String> _processes = new LinkedList<String>();
+        System.out.println(_processes);
+        Timer time = new Timer();
+        int timeRunning = 0;
+        while (CpuQueue.queueSize() > 0) {
+
+            // Gets the current process and removes it from the queue
+            Process current = CpuQueue.removeQueue(1);
+
+            // Update the wait table with the process
+            window.UpdateWaitTable(1, current.getProcessID());
+
+            // Get the service time of the process
+            int serviceTime = current.getServiceTime();
+            current.setCurrentServiceTime(serviceTime);
+            current.setR((waitTime + serviceTime) / serviceTime);
+            remainingProcesses.add(current);
+        }
     }
 }
