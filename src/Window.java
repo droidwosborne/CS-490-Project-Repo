@@ -24,8 +24,8 @@ import javax.swing.table.JTableHeader;
 public class Window extends JPanel implements ActionListener{
     // Declare default fields
     public Timer timer = new Timer();
-    private CPU cpu1=new CPU(1,this);
-    private CPU cpu2=new CPU(2,this);
+    private CPU1 cpu1=new CPU1(1,this);
+    private CPU2 cpu2=new CPU2(2,this);
     private boolean firstStart=true;
     double cpu1nTATSum = 0.0;
     double cpu1nTAT = 0.0;
@@ -304,7 +304,11 @@ public class Window extends JPanel implements ActionListener{
                     DisplayProcesses(reader, processesRead, i, processInstance);
                 }
                 // Start both CPUs
+                //CPU.setCpuNumber(1);
+                whichCPU = 1;
                 cpu1.start();
+                //CPU.setCpuNumber(2);
+                whichCPU = 2;
                 cpu2.start();
             }
             // Resume both CPUs if the system is paused
@@ -382,11 +386,26 @@ public class Window extends JPanel implements ActionListener{
             temp.add(processName.peek());
 
             // Set process name in GUI
-            cpu1Label.setText("<html>" + "cpu 1" + "<br/>exec: " + cpu1WaitingProcessQueueTable.getValueAt(0,0) + "<br/>time remaining = " + cpu1WaitingProcessQueueTable.getValueAt(0,1) + "</html>");
+            cpu1Label.setText("<html>" + "cpu 1 (HRRN)" + "<br/>exec: " + cpu1WaitingProcessQueueTable.getValueAt(0,0) + "<br/>time remaining = " + cpu1WaitingProcessQueueTable.getValueAt(0,1) + "</html>");
 
             //Set table rows for current process
             cpu1WaitingTableModel.insertRow(i,new Object[]{processName.peek(),arrivalTime.peek()});
             cpu1CompletedTableModel.insertRow(i,new Object[]{processName.peek(),arrivalTime.peek(),serviceTime.peek()});
+        }
+        if(i < cpu2WaitingProcessQueueTable.getRowCount())
+        {
+            // Gets each value from the reader
+            Queue<String> processName = reader.getProcessName(processes, i);
+            Queue<String> serviceTime = reader.getServiceTime(processes, i);
+            Queue<String> arrivalTime = reader.getArrivalTime(processes, i);
+            temp.add(processName.peek());
+
+            // Set process name in GUI
+            cpu2Label.setText("<html>" + "cpu 2(RR)" + "<br/>exec: " + cpu2WaitingProcessQueueTable.getValueAt(0,0) + "<br/>time remaining = " + cpu1WaitingProcessQueueTable.getValueAt(0,1) + "</html>");
+
+            //Set table rows for current process
+            cpu2WaitingTableModel.insertRow(i,new Object[]{processName.peek(),arrivalTime.peek()});
+            cpu2CompletedTableModel.insertRow(i,new Object[]{processName.peek(),arrivalTime.peek(),serviceTime.peek()});
         }
     }
 
@@ -427,14 +446,26 @@ public class Window extends JPanel implements ActionListener{
      * Update the wait table with the processes
      * @param exec is the executing process
      */
-    public void UpdateWaitTable(String exec) {
-
-        // Goes through all the processes in the queue and add them to the  queue
-        for(int i = 0; i < cpu1WaitingProcessQueueTable.getRowCount(); i++) {//For each row
-            for (int j = 0; j < cpu1WaitingProcessQueueTable.getColumnCount(); j++) {//For each column in that row
-                if (cpu1WaitingProcessQueueTable.getModel().getValueAt(i, j).toString().trim().equals(exec)) {
-                    System.out.println("A");
-                    cpu1WaitingTableModel.removeRow(i);
+    public void UpdateWaitTable(int cpu, String exec) {
+        if (cpu == 1) {
+            // Goes through all the processes in the queue and add them to the  queue
+            for (int i = 0; i < cpu1WaitingProcessQueueTable.getRowCount(); i++) {//For each row
+                for (int j = 0; j < cpu1WaitingProcessQueueTable.getColumnCount(); j++) {//For each column in that row
+                    if (cpu1WaitingProcessQueueTable.getModel().getValueAt(i, j).toString().trim().equals(exec)) {
+                        System.out.println("A");
+                        cpu1WaitingTableModel.removeRow(i);
+                    }
+                }
+            }
+        }
+        else{
+            // Goes through all the processes in the queue and add them to the  queue
+            for (int i = 0; i < cpu2WaitingProcessQueueTable.getRowCount(); i++) {//For each row
+                for (int j = 0; j < cpu2WaitingProcessQueueTable.getColumnCount(); j++) {//For each column in that row
+                    if (cpu2WaitingProcessQueueTable.getModel().getValueAt(i, j).toString().trim().equals(exec)) {
+                        System.out.println("A");
+                        cpu2WaitingTableModel.removeRow(i);
+                    }
                 }
             }
         }
@@ -447,33 +478,60 @@ public class Window extends JPanel implements ActionListener{
      * @param arrival is the arrival time
      * @param service is the service time
      */
-    public void UpdateFinishedTable(String exec, int totaltime, int arrival, int service){
+    public void UpdateFinishedTable(int cpu, String exec, int totaltime, int arrival, int service){
         int temp=0;
-
-        // Loop through each item in the completed queue and place it in the GUI table
-        for(int i = 0; i < cpu1CompletedProcessQueueTable.getRowCount(); i++) {//For each row
-                if(!(cpu1CompletedProcessQueueTable.getModel().getValueAt(i, 0)==null)) {
+        if (cpu == 1) {
+            // Loop through each item in the completed queue and place it in the GUI table
+            /*
+             * Currently working from a sequential order for the finish time from old code.
+             * Couldn't figure out way to pass in finish time from round robin scheduler on process
+             * to process basis.
+             */
+            for (int i = 0; i < cpu1CompletedProcessQueueTable.getRowCount(); i++) {//For each row
+                if (!(cpu1CompletedProcessQueueTable.getModel().getValueAt(i, 0) == null)) {
                     if (cpu1CompletedProcessQueueTable.getModel().getValueAt(i, 0).toString().trim().equals(exec)) {
-                        if(i>0) temp=Integer.parseInt(cpu1CompletedProcessQueueTable.getModel().getValueAt(i-1,3).toString());
-                        cpu1CompletedTableModel.setValueAt(totaltime-temp, i, 3);
-                        cpu1CompletedTableModel.setValueAt((totaltime-temp)+arrival, i, 4);
-                        cpu1CompletedTableModel.setValueAt(((totaltime-temp)+arrival)/service, i, 5);
+                        if (i > 0)
+                            temp = Integer.parseInt(cpu1CompletedProcessQueueTable.getModel().getValueAt(i - 1, 3).toString());
+                        cpu1CompletedTableModel.setValueAt(totaltime - temp, i, 3);
+                        cpu1CompletedTableModel.setValueAt((totaltime - temp) + arrival, i, 4);
+                        cpu1CompletedTableModel.setValueAt(((totaltime - temp) + arrival) / service, i, 5);
 
                         //Calculate avegage nTAT time per process for cpu1
-                        cpu1nTATSum += ((totaltime-temp)+arrival)/service;
-                        cpu1nTAT = (cpu1nTATSum)/(i+1);
+                        cpu1nTATSum += ((totaltime - temp) + arrival) / service;
+                        cpu1nTAT = (cpu1nTATSum) / (i + 1);
 
                         //Update cpu1 average nTAT label
                         cpu1nTATLabel.setText("<html><strong><font color='FFFFFF'><font size = 60px>Current average nTAT: " + new DecimalFormat("#.###").format(cpu1nTAT));
                         size = cpu1nTATLabel.getPreferredSize();
-                        cpu1nTATLabel.setBounds(100,450,size.width,size.height);
-
-                        //Update cpu2 average nTAT label
-                        cpu2nTATLabel.setText("<html><strong><font color='FFFFFF'><font size = 60px>Current average nTAT: " + new DecimalFormat("#.###").format(cpu2nTAT));
-                        size = cpu2nTATLabel.getPreferredSize();
-                        cpu2nTATLabel.setBounds(600,450,size.width,size.height);
+                        cpu1nTATLabel.setBounds(100, 450, size.width, size.height);
                     }
                 }
+            }
+        }
+        else{
+            // Loop through each item in the completed queue and place it in the GUI table
+            for (int i = 0; i < cpu2CompletedProcessQueueTable.getRowCount(); i++) {//For each row
+                if (!(cpu2CompletedProcessQueueTable.getModel().getValueAt(i, 0) == null)) {
+                    if (cpu2CompletedProcessQueueTable.getModel().getValueAt(i, 0).toString().trim().equals(exec)) {
+                        if (i > 0)
+                            temp = Integer.parseInt(cpu2CompletedProcessQueueTable.getModel().getValueAt(i - 1, 3).toString());
+                        cpu2CompletedTableModel.setValueAt(totaltime-temp, i, 3);
+                        cpu2CompletedTableModel.setValueAt((totaltime - temp) + arrival, i, 4);
+                        cpu2CompletedTableModel.setValueAt(((totaltime - temp) + arrival) / service, i, 5);
+
+                        //Calculate avegage nTAT time per process for cpu1
+                        cpu2nTATSum += ((totaltime - temp) + arrival) / service;
+                        System.out.println("nTAT Sum: "+cpu2nTATSum);
+                        cpu2nTAT = (cpu2nTATSum) / (i + 1);
+                        System.out.println("nTAT Average"+cpu2nTAT);
+
+                        //Update cpu1 average nTAT label
+                        cpu2nTATLabel.setText("<html><strong><font color='FFFFFF'><font size = 60px>Current average nTAT: " + new DecimalFormat("##.###").format(cpu2nTAT));
+                        size = cpu2nTATLabel.getPreferredSize();
+                        cpu2nTATLabel.setBounds(600, 450, size.width, size.height);
+                    }
+                }
+            }
         }
     }
 
@@ -533,4 +591,5 @@ public class Window extends JPanel implements ActionListener{
 
     private Dimension size;
     public static String file;
+    public static int whichCPU;
 }

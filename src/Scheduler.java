@@ -4,8 +4,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Scheduler {
-    public Scheduler() {
+    private Window window;
+    public Scheduler(Window cpuWindow) {
         System.out.println("I am the scheduler");
+        this.window = cpuWindow;
     }
 
     public void RoundRobin(int timeSlice) {
@@ -21,19 +23,22 @@ public class Scheduler {
         int timeRunning = 0;
         Timer time = new Timer();
 
+
         //Prints out which CPU this is and the size of the CPU Queue. If the CPU queue is empty it can't process anything
 
         while (CpuQueue.queueSize() > 0) {
 
             // Gets the current process and removes it from the queue
             Process current = CpuQueue.removeQueue(1);
+            int processServiceTime = 0;
 
             // Update the wait table with the process
             System.out.println(current + " TEST " + 1); //Prints out current process
-            //   window.UpdateWaitTable(current.getProcessID());
+            window.UpdateWaitTable(2, current.getProcessID());
 
             // Get the service time of the process
             int serviceTime = current.getServiceTime();
+            processServiceTime = current.getServiceTime();
             current.setCurrentServiceTime(serviceTime);
 
             // Runs as long as the service time exists
@@ -63,8 +68,13 @@ public class Scheduler {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                window.UpdateCPU(2, current.getProcessID(), current.getCurrentServiceTime());
             }
-
+            common.totalTime += timeSlice;
+            common.completedProcesses++;
+            if(processServiceTime != 0) {
+                window.UpdateFinishedTable(2, current.getProcessID(), common.totalTime, current.getArrivalTime(), processServiceTime);
+            }
         }
         System.out.println("Finished!");
     }
