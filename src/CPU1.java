@@ -73,6 +73,9 @@ public class CPU1 extends Thread{
             window.UpdateFinishedTable(current.getProcessID(), common.totalTime, current.getArrivalTime(), current.getServiceTime());
             CalculateThroughput();
         }*/
+        Timer time = new Timer();
+        Scheduler scheduler = new Scheduler(window);
+        scheduler.HRRN();
 
 
     }

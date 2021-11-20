@@ -19,7 +19,7 @@ public class Scheduler {
         Queue<String> _processes = new LinkedList<String>();
         //_processes.add("0, 3, Process A, 1");
         //_processes.add("2, 2, Process B, 1");
-        System.out.println(_processes);
+       // System.out.println(_processes);
         boolean timeSliceUp = false;
         int timeRunning = 0;
         Timer time = new Timer();
@@ -80,24 +80,57 @@ public class Scheduler {
     public void HRRN() {
         System.out.println("I am HRRN");
         int waitTime = 0;
+        int previousProcessFinishTime = 0;
         Queue<Process> remainingProcesses = new LinkedList<>();
         Queue<String> _processes = new LinkedList<String>();
-        System.out.println(_processes);
+
         Timer time = new Timer();
         int timeRunning = 0;
-        while (CpuQueue.queueSize() > 0) {
+        double hrr = 0;
+        Queue<Process> collected = new LinkedList<>();
+        boolean isCurrent = false;
+
+        while (CpuQueue2.queueSize() > 0) {
 
             // Gets the current process and removes it from the queue
-            Process current = CpuQueue.removeQueue(1);
+            Process current = CpuQueue2.removeQueue(1);
+            System.out.println("Is running process :" + current);
+            if (collected.contains(current))
+            {
+                for (Process p : collected)
+                {
+                    if (p.getR() > hrr)
+                    {
+                        hrr = p.getR();
+                        System.out.println("Collecting");
+                    }
+                }
+                isCurrent = true;
+            }
 
+            System.out.println(current.getArrivalTime());
             // Update the wait table with the process
             window.UpdateWaitTable(1, current.getProcessID());
-
+            waitTime = previousProcessFinishTime - current.getArrivalTime();
+            System.out.println("wait time " + waitTime);
             // Get the service time of the process
             int serviceTime = current.getServiceTime();
             current.setCurrentServiceTime(serviceTime);
             current.setR((waitTime + serviceTime) / serviceTime);
-            remainingProcesses.add(current);
+            if (!isCurrent)
+            {
+                CpuQueue2.addQueue(current);
+                System.out.println("Is current process :" + current);
+            }
+
+            System.out.println("Previous " + previousProcessFinishTime);
+            previousProcessFinishTime = previousProcessFinishTime + current.getServiceTime();
+            System.out.println("Previous " + previousProcessFinishTime);
+            collected.add(current);
+            isCurrent = false;
         }
+        System.out.println("Finished HRRN!");
+
+
     }
 }

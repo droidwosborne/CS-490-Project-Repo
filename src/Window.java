@@ -307,6 +307,7 @@ public class Window extends JPanel implements ActionListener{
                 //CPU.setCpuNumber(1);
                 whichCPU = 1;
                 cpu1.start();
+
                 //CPU.setCpuNumber(2);
                 whichCPU = 2;
                 cpu2.start();

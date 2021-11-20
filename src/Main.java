@@ -19,7 +19,7 @@ public class Main {
         processWindow.pack();
         processWindow.setVisible(true);
 
-       // Scheduler scheduler = new Scheduler();
-       // scheduler.RoundRobin();
+      //  Scheduler scheduler = new Scheduler(processPanel);
+       // scheduler.HRRN();
     }
 }
