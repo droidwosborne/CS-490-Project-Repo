@@ -88,23 +88,64 @@ public class Scheduler {
         int timeRunning = 0;
         double hrr = 0;
         Queue<Process> collected = new LinkedList<>();
+        Queue<Process> finished = new LinkedList<>();
         boolean isCurrent = false;
+        Process current = new Process(0,"empty", 0,0);
+        int currTime = 0;
+        int remainingServiceTime = 0;
 
         while (CpuQueue2.queueSize() > 0) {
 
             // Gets the current process and removes it from the queue
-            Process current = CpuQueue2.removeQueue(1);
-            System.out.println("Is running process :" + current);
-            if (collected.contains(current))
-            {
-                for (Process p : collected)
-                {
-                    if (p.getR() > hrr)
+            try {
+                Process t_curr = CpuQueue2.peekQueue();
+                if (t_curr.getArrivalTime() <= currTime && current.getCurrentServiceTime() <= 0) {
+                    current = CpuQueue2.removeQueue(1);
+                    current.setCurrentServiceTime(current.getServiceTime());
+                    remainingServiceTime = current.getCurrentServiceTime();
+                    if (!collected.contains(current))
                     {
-                        hrr = p.getR();
-                        System.out.println("Collecting");
+                        collected.add(current);
+                    }
+                    System.out.println("first Curr service time: "  + current.getCurrentServiceTime());
+                }
+                else if (t_curr.getArrivalTime() <= currTime)
+                {
+                    if (!collected.contains(current))
+                    {
+                        Process t_current = CpuQueue2.removeQueue(1);
+                        collected.add(t_current);
                     }
                 }
+
+                Thread.sleep(Timer.timeUnit);
+                currTime += 1;
+                remainingServiceTime -= 1;
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            current.setCurrentServiceTime((remainingServiceTime));
+            System.out.println("Curr service time: "  + current.getCurrentServiceTime());
+            System.out.println("Remaining Service Time :" + remainingServiceTime);
+            if (collected.contains(current))
+            {
+                Process t_curr = current;
+                for (Process p : collected)
+                {
+                    System.out.println("first P is: " + p);
+                    if (p.getR() > hrr && collected.contains(p) && !finished.contains(p))
+                    {
+                        hrr = p.getR();
+                        System.out.println("Collecting HRR: " + hrr);
+                        t_curr = p;
+                        System.out.println("P is: " + p);
+                    }
+                }
+                current = t_curr;
+                hrr = 0;
                 isCurrent = true;
             }
 
@@ -115,19 +156,29 @@ public class Scheduler {
             System.out.println("wait time " + waitTime);
             // Get the service time of the process
             int serviceTime = current.getServiceTime();
-            current.setCurrentServiceTime(serviceTime);
+           // current.setCurrentServiceTime(serviceTime);
             current.setR((waitTime + serviceTime) / serviceTime);
-            if (!isCurrent)
+            if (!isCurrent && remainingServiceTime > 0)
             {
                 CpuQueue2.addQueue(current);
+
+
+
                 System.out.println("Is current process :" + current);
+                System.out.println("remaining ST :" + remainingServiceTime);
+            }
+            else if (current.getCurrentServiceTime() <= 0)
+            {
+                finished.add(current);
             }
 
-            System.out.println("Previous " + previousProcessFinishTime);
+            window.UpdateCPU(1, current.getProcessID(), current.getCurrentServiceTime());
+            //System.out.println("Previous " + previousProcessFinishTime);
             previousProcessFinishTime = previousProcessFinishTime + current.getServiceTime();
-            System.out.println("Previous " + previousProcessFinishTime);
-            collected.add(current);
+           // System.out.println("Previous " + previousProcessFinishTime);
+
             isCurrent = false;
+
         }
         System.out.println("Finished HRRN!");
 
