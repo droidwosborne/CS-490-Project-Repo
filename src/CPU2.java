@@ -33,7 +33,7 @@ public class CPU2 extends Thread{
     public void run() {
             Timer time = new Timer();
             Scheduler scheduler = new Scheduler(window);
-            //scheduler.RoundRobin(window.getTimeSliceTextField());
+            scheduler.RoundRobin(window.getTimeSliceTextField());
         //Prints out which CPU this is and the size of the CPU Queue. If the CPU queue is empty it can't process anything
 
        /* while (CpuQueue.queueSize() > 0) {
