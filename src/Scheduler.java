@@ -93,6 +93,7 @@ public class Scheduler {
         Process current = new Process(0,"empty", 0,0);
         int currTime = 0;
         int remainingServiceTime = 0;
+        int processServiceTime = 0;
 
         while (CpuQueue2.queueSize() > 0) {
 
@@ -101,6 +102,7 @@ public class Scheduler {
                 Process t_curr = CpuQueue2.peekQueue();
                 if (t_curr.getArrivalTime() <= currTime && current.getCurrentServiceTime() <= 0) {
                     current = CpuQueue2.removeQueue(1);
+                    processServiceTime = current.getServiceTime();
                     current.setCurrentServiceTime(current.getServiceTime());
                     remainingServiceTime = current.getCurrentServiceTime();
                     if (!collected.contains(current))
@@ -178,7 +180,7 @@ public class Scheduler {
            // System.out.println("Previous " + previousProcessFinishTime);
 
             isCurrent = false;
-
+            window.UpdateFinishedTable(1, current.getProcessID(), common.totalTime, current.getArrivalTime(), processServiceTime);
         }
         System.out.println("Finished HRRN!");
 
