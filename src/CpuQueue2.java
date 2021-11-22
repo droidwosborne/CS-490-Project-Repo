@@ -14,7 +14,6 @@ import java.util.Queue;
 public class CpuQueue2 {
     //Static Queue so that it can be accessed anywhere
     public static Queue<Process> queue = new LinkedList<Process>();
-    public static Queue<Process> hrrnQueue = new LinkedList<Process>();
 
     /**
      * Default constructor
@@ -63,10 +62,9 @@ public class CpuQueue2 {
 
     }
 
-    public void duplicateQueue()
+    public static Process peekQueue()
     {
-        hrrnQueue = queue;
+        return queue.peek();
     }
-
 
 }

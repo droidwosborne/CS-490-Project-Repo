@@ -453,7 +453,6 @@ public class Window extends JPanel implements ActionListener{
             for (int i = 0; i < cpu1WaitingProcessQueueTable.getRowCount(); i++) {//For each row
                 for (int j = 0; j < cpu1WaitingProcessQueueTable.getColumnCount(); j++) {//For each column in that row
                     if (cpu1WaitingProcessQueueTable.getModel().getValueAt(i, j).toString().trim().equals(exec)) {
-                        System.out.println("A");
                         cpu1WaitingTableModel.removeRow(i);
                     }
                 }
@@ -464,7 +463,6 @@ public class Window extends JPanel implements ActionListener{
             for (int i = 0; i < cpu2WaitingProcessQueueTable.getRowCount(); i++) {//For each row
                 for (int j = 0; j < cpu2WaitingProcessQueueTable.getColumnCount(); j++) {//For each column in that row
                     if (cpu2WaitingProcessQueueTable.getModel().getValueAt(i, j).toString().trim().equals(exec)) {
-                        System.out.println("A");
                         cpu2WaitingTableModel.removeRow(i);
                     }
                 }
@@ -494,7 +492,7 @@ public class Window extends JPanel implements ActionListener{
                         if (i > 0)
                             temp = Integer.parseInt(cpu1CompletedProcessQueueTable.getModel().getValueAt(i - 1, 3).toString());
                         cpu1CompletedTableModel.setValueAt(totaltime - temp, i, 3);
-                        cpu1CompletedTableModel.setValueAt((totaltime - temp) + arrival, i, 4);
+                        cpu1CompletedTableModel.setValueAt((totaltime) + arrival, i, 4);
                         cpu1CompletedTableModel.setValueAt(((totaltime - temp) + arrival) / service, i, 5);
 
                         //Calculate avegage nTAT time per process for cpu1
@@ -522,9 +520,7 @@ public class Window extends JPanel implements ActionListener{
 
                         //Calculate avegage nTAT time per process for cpu1
                         cpu2nTATSum += ((totaltime - temp) + arrival) / service;
-                        System.out.println("nTAT Sum: "+cpu2nTATSum);
                         cpu2nTAT = (cpu2nTATSum) / (i + 1);
-                        System.out.println("nTAT Average"+cpu2nTAT);
 
                         //Update cpu1 average nTAT label
                         cpu2nTATLabel.setText("<html><strong><font color='FFFFFF'><font size = 60px>Current average nTAT: " + new DecimalFormat("##.###").format(cpu2nTAT));
