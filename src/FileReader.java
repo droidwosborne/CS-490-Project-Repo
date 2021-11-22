@@ -160,7 +160,6 @@ public class FileReader {
             time.add(tempName);
 
         }
-        System.out.println("Time: " + time);
         return time;
     }
 
